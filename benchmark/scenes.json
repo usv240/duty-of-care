@@ -1,0 +1,266 @@
+[
+  {
+    "id": "positive-01",
+    "scene": "INT. SELF-AUTHORED SET 1 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-02",
+    "scene": "INT. SELF-AUTHORED SET 2 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-03",
+    "scene": "INT. SELF-AUTHORED SET 3 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-04",
+    "scene": "INT. SELF-AUTHORED SET 4 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "positive-05",
+    "scene": "INT. SELF-AUTHORED SET 5 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-06",
+    "scene": "INT. SELF-AUTHORED SET 6 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-07",
+    "scene": "INT. SELF-AUTHORED SET 7 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-08",
+    "scene": "INT. SELF-AUTHORED SET 8 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "positive-09",
+    "scene": "INT. SELF-AUTHORED SET 9 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-10",
+    "scene": "INT. SELF-AUTHORED SET 10 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-11",
+    "scene": "INT. SELF-AUTHORED SET 11 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-12",
+    "scene": "INT. SELF-AUTHORED SET 12 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "positive-13",
+    "scene": "INT. SELF-AUTHORED SET 13 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-14",
+    "scene": "INT. SELF-AUTHORED SET 14 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-15",
+    "scene": "INT. SELF-AUTHORED SET 15 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-16",
+    "scene": "INT. SELF-AUTHORED SET 16 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "positive-17",
+    "scene": "INT. SELF-AUTHORED SET 17 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-18",
+    "scene": "INT. SELF-AUTHORED SET 18 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-19",
+    "scene": "INT. SELF-AUTHORED SET 19 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-20",
+    "scene": "INT. SELF-AUTHORED SET 20 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "positive-21",
+    "scene": "INT. SELF-AUTHORED SET 21 - NIGHT\nA character discusses suicide and gives an exact amount.",
+    "expected_candidate": true,
+    "expected_trigger": "method_specificity"
+  },
+  {
+    "id": "positive-22",
+    "scene": "INT. SELF-AUTHORED SET 22 - NIGHT\nA character calls suicide the only way out.",
+    "expected_candidate": true,
+    "expected_trigger": "framing_as_solution"
+  },
+  {
+    "id": "positive-23",
+    "scene": "INT. SELF-AUTHORED SET 23 - NIGHT\nA character mentions self-harm, then the scene ends.",
+    "expected_candidate": true,
+    "expected_trigger": "absence_of_help_seeking"
+  },
+  {
+    "id": "positive-24",
+    "scene": "INT. SELF-AUTHORED SET 24 - NIGHT\nA character describes suicide as a beautiful sacrifice.",
+    "expected_candidate": true,
+    "expected_trigger": "romanticisation"
+  },
+  {
+    "id": "negative-01",
+    "scene": "INT. SELF-AUTHORED SET 25 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-02",
+    "scene": "INT. SELF-AUTHORED SET 26 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-03",
+    "scene": "INT. SELF-AUTHORED SET 27 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-04",
+    "scene": "INT. SELF-AUTHORED SET 28 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-05",
+    "scene": "INT. SELF-AUTHORED SET 29 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-06",
+    "scene": "INT. SELF-AUTHORED SET 30 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-07",
+    "scene": "INT. SELF-AUTHORED SET 31 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-08",
+    "scene": "INT. SELF-AUTHORED SET 32 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-09",
+    "scene": "INT. SELF-AUTHORED SET 33 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-10",
+    "scene": "INT. SELF-AUTHORED SET 34 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-11",
+    "scene": "INT. SELF-AUTHORED SET 35 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-12",
+    "scene": "INT. SELF-AUTHORED SET 36 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-13",
+    "scene": "INT. SELF-AUTHORED SET 37 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-14",
+    "scene": "INT. SELF-AUTHORED SET 38 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-15",
+    "scene": "INT. SELF-AUTHORED SET 39 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-16",
+    "scene": "INT. SELF-AUTHORED SET 40 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-17",
+    "scene": "INT. SELF-AUTHORED SET 41 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-18",
+    "scene": "INT. SELF-AUTHORED SET 42 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-19",
+    "scene": "INT. SELF-AUTHORED SET 43 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-20",
+    "scene": "INT. SELF-AUTHORED SET 44 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-21",
+    "scene": "INT. SELF-AUTHORED SET 45 - DAY\nA character has self-harm thoughts, calls a friend, and asks for help. SUPER: Help is available. Call 988.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-22",
+    "scene": "INT. SELF-AUTHORED SET 46 - DAY\nFriends discuss addiction, recovery, and ongoing support. SUPER: Crisis resources are available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-23",
+    "scene": "INT. SELF-AUTHORED SET 47 - DAY\nA counsellor listens while a character describes coping and recovery. SUPER: Help is available.",
+    "expected_candidate": false
+  },
+  {
+    "id": "negative-24",
+    "scene": "INT. SELF-AUTHORED SET 48 - DAY\nA family intervenes after a suicide concern and stays through the aftermath. SUPER: Call 988 for support.",
+    "expected_candidate": false
+  }
+]
