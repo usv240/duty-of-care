@@ -26,11 +26,15 @@ class Trigger(BaseModel):
 
 
 class GuidanceClause(BaseModel):
+    clause_id: str = ""
     jurisdiction: str
     publisher: str
     document_title: str
     clause: str
     source_url: str
+    trigger_classes: list[str] = Field(default_factory=list)
+    version: str = ""
+    retrieved_at: str = ""
 
 
 class ReviewRequest(BaseModel):

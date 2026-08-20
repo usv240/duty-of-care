@@ -1,0 +1,90 @@
+[
+  {
+    "clause_id": "who-hope-help-2019",
+    "jurisdiction": "GLOBAL",
+    "publisher": "World Health Organization",
+    "document_title": "Preventing suicide: a resource for filmmakers and others working on stage and screen",
+    "clause": "Show overcoming a suicidal crisis, help-seeking, looking after oneself and others, and messages of hope.",
+    "source_url": "https://www.who.int/publications/i/item/preventing-suicide-a-resource-for-filmmakers-and-others-working-on-stage-and-screen",
+    "trigger_classes": ["absence_of_help_seeking", "framing_as_solution", "romanticisation"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "who-accuracy-2019",
+    "jurisdiction": "GLOBAL",
+    "publisher": "World Health Organization",
+    "document_title": "Preventing suicide: a resource for filmmakers and others working on stage and screen",
+    "clause": "Avoid portrayals that nurture myths or misunderstandings; account for possible imitation effects among vulnerable viewers.",
+    "source_url": "https://www.who.int/publications/i/item/preventing-suicide-a-resource-for-filmmakers-and-others-working-on-stage-and-screen",
+    "trigger_classes": ["method_specificity", "framing_as_solution", "romanticisation", "repetition"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "naa-method-detail-2019",
+    "jurisdiction": "US",
+    "publisher": "National Action Alliance for Suicide Prevention",
+    "document_title": "National Recommendations for Depicting Suicide",
+    "clause": "Avoid showing or describing details of suicide methods, including graphic depictions of how someone took their life.",
+    "source_url": "https://theactionalliance.org/sites/default/files/natl_recommendations_for_depicting_suicide_1.pdf",
+    "trigger_classes": ["method_specificity"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "naa-complexity-2019",
+    "jurisdiction": "US",
+    "publisher": "National Action Alliance for Suicide Prevention",
+    "document_title": "National Recommendations for Depicting Suicide",
+    "clause": "Convey that suicide is complex and often caused by a range of factors rather than by a single event.",
+    "source_url": "https://theactionalliance.org/sites/default/files/natl_recommendations_for_depicting_suicide_1.pdf",
+    "trigger_classes": ["framing_as_solution", "romanticisation"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "naa-help-2019",
+    "jurisdiction": "US",
+    "publisher": "National Action Alliance for Suicide Prevention",
+    "document_title": "National Recommendations for Depicting Suicide",
+    "clause": "Show that help is available through social support, professional help, crisis services, or alternative coping strategies.",
+    "source_url": "https://theactionalliance.org/sites/default/files/natl_recommendations_for_depicting_suicide_1.pdf",
+    "trigger_classes": ["absence_of_help_seeking", "signposting_absence"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "naa-experts-2019",
+    "jurisdiction": "US",
+    "publisher": "National Action Alliance for Suicide Prevention",
+    "document_title": "National Recommendations for Depicting Suicide",
+    "clause": "Consult suicide-prevention messaging experts and people with personal experience when developing these storylines.",
+    "source_url": "https://theactionalliance.org/sites/default/files/natl_recommendations_for_depicting_suicide_1.pdf",
+    "trigger_classes": ["method_specificity", "framing_as_solution", "romanticisation", "repetition"],
+    "version": "2019",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "samaritans-resources-2026",
+    "jurisdiction": "GB",
+    "publisher": "Samaritans",
+    "document_title": "Guidance for portrayals of suicide and self-harm in drama",
+    "clause": "Provide information about support organisations and helplines so people who are struggling can seek help.",
+    "source_url": "https://www.samaritans.org/about-samaritans/media-guidelines/guidance-portrayals-suicide-and-self-harm-drama/",
+    "trigger_classes": ["absence_of_help_seeking", "signposting_absence"],
+    "version": "accessed 2026-08-20",
+    "retrieved_at": "2026-08-20"
+  },
+  {
+    "clause_id": "samaritans-expert-review-2026",
+    "jurisdiction": "GB",
+    "publisher": "Samaritans",
+    "document_title": "Guidance for portrayals of suicide and self-harm in drama",
+    "clause": "Samaritans' Media Advisory team offers expert advice to authors, producers, and scriptwriters.",
+    "source_url": "https://www.samaritans.org/about-samaritans/media-guidelines/guidance-portrayals-suicide-and-self-harm-drama/",
+    "trigger_classes": ["method_specificity", "framing_as_solution", "romanticisation", "repetition"],
+    "version": "accessed 2026-08-20",
+    "retrieved_at": "2026-08-20"
+  }
+]

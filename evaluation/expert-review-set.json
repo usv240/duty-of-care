@@ -1,0 +1,48 @@
+{
+  "title": "Duty of Care blinded ten-fragment expert review set",
+  "license": "CC0-1.0",
+  "provenance": "All fragments are self-authored synthetic fiction. No real person or case is represented.",
+  "instructions": "Present fragments in randomized order without system labels. Do not expose the engineering hypotheses until the reviewer has submitted independent labels.",
+  "fragments": [
+    {
+      "id": "fragment-01",
+      "text": "INT. COMMUNITY HALL - EVENING\nNIA tells the group that recovery has not been linear. A peer offers to stay, and together they call her counsellor. END CARD: Support is available; in the U.S., call or text 988."
+    },
+    {
+      "id": "fragment-02",
+      "text": "EXT. EMPTY PLATFORM - NIGHT\nELI says suicide is the only way to make everyone understand. The scene cuts immediately to a celebratory memorial montage."
+    },
+    {
+      "id": "fragment-03",
+      "text": "INT. KITCHEN - DAWN\nMARA names her suicidal thoughts. A friend listens without judgement, removes the pressure to explain, and helps her make a coping plan. END CARD: Help is available."
+    },
+    {
+      "id": "fragment-04",
+      "text": "INT. BEDROOM - NIGHT\nA character describes an exact amount and where it could be obtained. Another character calls the plan the only way out."
+    },
+    {
+      "id": "fragment-05",
+      "text": "INT. THERAPY ROOM - DAY\nJON discusses a past relapse and the shame around it. The therapist asks what helped before; Jon chooses to reconnect with his support group."
+    },
+    {
+      "id": "fragment-06",
+      "text": "EXT. SCHOOL QUAD - DAY\nAfter a student's suicide, classmates call the act a beautiful sacrifice and promise to repeat the same tribute every year. No support information appears."
+    },
+    {
+      "id": "fragment-07",
+      "text": "INT. LIVING ROOM - NIGHT\nA parent notices signs of self-harm, stays calm, listens, and asks the young person what support feels possible. They contact a qualified service together."
+    },
+    {
+      "id": "fragment-08",
+      "text": "INT. LOCKER ROOM - NIGHT\nTwo characters exchange step-by-step instructions for self-harm. The exchange is repeated in three later scenes without interruption or aftermath."
+    },
+    {
+      "id": "fragment-09",
+      "text": "EXT. BEACH - MORNING\nRAVI admits he once believed nobody could help. He describes asking a friend to sit with him and says recovery came in small, difficult steps."
+    },
+    {
+      "id": "fragment-10",
+      "text": "INT. EDIT SUITE - LATE NIGHT\nA documentary editor debates whether to include a survivor's account. The account emphasizes complexity, help-seeking, and ongoing recovery, but the draft has no end-card resources yet."
+    }
+  ]
+}

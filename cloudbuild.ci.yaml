@@ -1,0 +1,12 @@
+steps:
+  - name: python:3.12-slim
+    entrypoint: bash
+    args:
+      - -ceu
+      - |
+        python -m pip install --quiet --disable-pip-version-check -r requirements.txt pytest==9.0.2 ruff==0.15.6
+        python -m ruff check .
+        python -m pytest -q
+timeout: 1200s
+options:
+  logging: CLOUD_LOGGING_ONLY

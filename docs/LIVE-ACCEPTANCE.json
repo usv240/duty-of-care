@@ -1,0 +1,51 @@
+{
+  "verified_at": "2026-08-20T19:36:00-04:00",
+  "service": "duty-of-care-agent-backend",
+  "revision": "duty-of-care-agent-backend-00014-fds",
+  "url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
+  "health": {
+    "google_vertex": true,
+    "agent_search": true,
+    "google_adk": true,
+    "replit": false,
+    "agent_runtime_ready": true,
+    "product_surface": "cloud_run_fallback"
+  },
+  "flagged_case": {
+    "provenance": "self-authored CC0 demonstration scene",
+    "grounded_flag_count": 1,
+    "deterministic_trigger_classes": [
+      "method_specificity",
+      "framing_as_solution",
+      "absence_of_help_seeking"
+    ],
+    "retrieved_clause_count": 6,
+    "publishers": [
+      "National Action Alliance for Suicide Prevention",
+      "World Health Organization"
+    ],
+    "agent": "GuidanceContextReviewer",
+    "model": "gemini-2.5-flash",
+    "agent_status": "completed",
+    "decision_source": "deterministic_trigger_plus_agent_search_clause",
+    "safety_filter": "passed",
+    "requires_human": true,
+    "decision_owner": "writer",
+    "overall_score": null
+  },
+  "responsible_depiction_case": {
+    "provenance": "self-authored CC0 demonstration scene",
+    "deterministic_trigger_count": 0,
+    "grounded_flag_count": 0,
+    "grounding_status": "available",
+    "decision_owner": "writer",
+    "overall_score": null
+  },
+  "claims_not_yet_verified": [
+    "Replit Agent material build evidence",
+    "public Replit deployment",
+    "qualified independent ten-fragment review",
+    "public demo video",
+    "Devpost submission"
+  ]
+}

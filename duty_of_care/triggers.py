@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import re
-from collections import Counter
 
 from .models import Scene, Trigger
 
@@ -52,7 +51,6 @@ def detect_triggers(screenplay: str) -> list[Trigger]:
         if not _HELP.search(scene.text):
             triggers.append(Trigger(scene_id=scene.scene_id, trigger_class="absence_of_help_seeking", evidence_excerpt=_excerpt(scene.text, subject), rule="The candidate scene mentions the subject without a nearby support, intervention, coping, or aftermath signal."))
 
-    repeated = Counter(subject_scenes)
     if len(subject_scenes) >= 2:
         for scene_id in subject_scenes:
             triggers.append(Trigger(scene_id=scene_id, trigger_class="repetition", evidence_excerpt=f"Subject appears in {len(subject_scenes)} scenes.", rule="The same act or subject is depicted repeatedly across the script."))
