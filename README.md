@@ -7,6 +7,10 @@ Duty of Care is a guidance-grounded pre-review for independent screenwriters dep
 
 **Live Google runtime:** https://duty-of-care-agent-backend-109051079423.us-central1.run.app
 
+Start with [`JUDGING.md`](JUDGING.md) and the machine-readable
+[`submission-evidence.json`](submission-evidence.json). They explicitly preserve
+the mandatory Replit blocker.
+
 ## Why this is more than a prompt
 
 1. Auditable code identifies a narrow candidate and shows the exact rule and excerpt.

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "project": "Duty of Care",
+  "track": "Replit",
+  "public_url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
+  "repository": "https://github.com/usv240/duty-of-care",
+  "license": "Apache-2.0",
+  "google_runtime": {"status": "verified", "technologies": ["Google Agent Search", "Google ADK", "Gemini on Vertex AI"], "evidence": "/health"},
+  "partner_development": {"status": "blocked_external", "technology": "Replit Agent"},
+  "partner_hosting": {"status": "blocked_external", "required_domain": "replit.app or replit.dev"},
+  "judge_contrast": {"positive": "deterministic trigger plus source-linked clause", "control": "responsible depiction yields zero candidates and flags"},
+  "decision_owner": "writer",
+  "claims_excluded": ["clinical safety", "certification", "censorship authority", "expert validation before completion"],
+  "submission_video": {"status": "pending_external"},
+  "devpost": {"status": "pending_external"}
+}
