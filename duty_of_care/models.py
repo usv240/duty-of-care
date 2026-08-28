@@ -23,6 +23,9 @@ class Trigger(BaseModel):
     ]
     evidence_excerpt: str
     rule: str
+    matched_text: str = ""
+    match_start: int = -1
+    match_end: int = -1
 
 
 class GuidanceClause(BaseModel):

@@ -47,9 +47,9 @@ def detect_triggers(screenplay: str) -> list[Trigger]:
         ):
             match = pattern.search(scene.text)
             if match:
-                triggers.append(Trigger(scene_id=scene.scene_id, trigger_class=trigger_class, evidence_excerpt=_excerpt(scene.text, match), rule=rule))
+                triggers.append(Trigger(scene_id=scene.scene_id, trigger_class=trigger_class, evidence_excerpt=_excerpt(scene.text, match), rule=rule, matched_text=match.group(0), match_start=match.start(), match_end=match.end()))
         if not _HELP.search(scene.text):
-            triggers.append(Trigger(scene_id=scene.scene_id, trigger_class="absence_of_help_seeking", evidence_excerpt=_excerpt(scene.text, subject), rule="The candidate scene mentions the subject without a nearby support, intervention, coping, or aftermath signal."))
+            triggers.append(Trigger(scene_id=scene.scene_id, trigger_class="absence_of_help_seeking", evidence_excerpt=_excerpt(scene.text, subject), rule="The candidate scene mentions the subject without a nearby support, intervention, coping, or aftermath signal.", matched_text=subject.group(0), match_start=subject.start(), match_end=subject.end()))
 
     if len(subject_scenes) >= 2:
         for scene_id in subject_scenes:

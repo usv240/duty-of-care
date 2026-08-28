@@ -161,6 +161,7 @@ async def review(request: ReviewRequest) -> dict[str, object]:
             )
     return {
         "data": {
+            "scenes": [scene.model_dump() for scene in scenes.values()],
             "grounded_flags": grounded_flags,
             "trigger_candidates": [item.model_dump() for item in triggers],
             "grounding_status": "available" if configured else "not_configured",
