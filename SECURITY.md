@@ -8,6 +8,7 @@
 - Exports (`POST /v1/exports`) happen only when the writer presses Export. On Replit they go to App Storage; elsewhere to a temporary local file that does not survive an instance restart.
 - Saved decisions (`/v1/decisions`) require a signed-in Replit Auth writer, are scoped to that writer, are deletable, and store a hash of the scene, never its text. The `X-Replit-User-*` headers are trusted only when the process runs on Replit.
 - The approved guidance corpus contains public source metadata and short attributed clauses only.
+- On Replit without local Google retrieval configuration, only the exact documented backend route-and-method pairs are proxied to the fixed `DUTY_OF_CARE_BACKEND_URL` HTTPS origin. The request cannot choose an upstream. Redirects are rejected, request bodies are capped at 2 MB, responses at 10 MB, and upstream work has connect, read, and 120-second total deadlines.
 - No Google service-account key belongs in this repository or in Replit. Replit holds only the backend URL and its own signing secret as Replit Secrets.
 - When the agent runs on Vertex AI Agent Engine, the session state carries the scene text and retrieved clauses for the duration of that review; Agent Engine sessions are created per review and are not reused. When the managed runtime fails, the identical agent runs in-process and the response records `runtime: adk_in_process_fallback`.
 
@@ -16,7 +17,7 @@
 - Keys are stateless HMAC tokens (`doc_<id>_<issued>_<signature>`) signed with `DUTY_OF_CARE_API_KEY_SECRET`, mounted on Cloud Run from Secret Manager (`duty-of-care-api-key-secret`). No plaintext key is stored anywhere.
 - A key cannot be revoked individually; rotate the secret to invalidate all keys. Keys expire after 90 days.
 - Per-caller sliding-window limits per minute: review 6, keys 10, exports 10, decisions 30; keyed callers get 5x. Limits are enforced per instance.
-- The API limits a screenplay to 250,000 characters. Replit's proxy must also enforce body and timeout limits, use a fixed upstream allowlist, and prevent open redirects or arbitrary URL fetching.
+- The API limits a screenplay to 250,000 characters. The Replit proxy separately enforces its raw-byte and timeout limits before forwarding.
 
 ## Safety boundary
 

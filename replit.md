@@ -4,12 +4,13 @@ This file is intentionally honest: **Replit Agent evidence and the public Replit
 
 ## What is already in the repository for Replit
 
-- `.replit`: Autoscale deployment of this same FastAPI app, port 8080, Python 3.12 module.
+- `.replit`: Autoscale deployment of this same FastAPI app, port 8080, Python 3.11 module.
 - `duty_of_care/replit_platform.py`: runtime detection (`REPL_ID`, `REPLIT_DEPLOYMENT`, `REPLIT_DOMAINS`), Replit Auth identity from the `X-Replit-User-*` headers (trusted only on Replit), a decision store that uses Replit Database (Postgres via `DATABASE_URL`, or the key-value store via `REPLIT_DB_URL`) with a local fallback, an export store on App Storage with a local fallback, and the scheduled re-check record.
 - `scripts/scheduled_recheck.py`: the Scheduled Deployment job.
 - Routes that light up on Replit: `/v1/me`, `/v1/decisions`, `/v1/exports`, and the Replit cards on `/stack`.
 - `docs/REPLIT-BUILD-EVIDENCE.template.md`: the evidence file to fill in, and nothing else.
-- The Google-only variables (`AGENT_ENGINE_RESOURCE`, `MODEL_ARMOR_TEMPLATE`, `VERTEX_SEARCH_DATA_STORE`) belong to the Cloud Run backend, not to Replit; the Replit surface proxies review calls to `DUTY_OF_CARE_BACKEND_URL`.
+- The Google-only variables (`AGENT_ENGINE_RESOURCE`, `MODEL_ARMOR_TEMPLATE`, `VERTEX_SEARCH_DATA_STORE`) belong to the Cloud Run backend, not to Replit. When `VERTEX_SEARCH_DATA_STORE` is absent on Replit, middleware proxies only exact allowlisted route-and-method pairs to the fixed HTTPS origin in `DUTY_OF_CARE_BACKEND_URL`: `GET /health`, `/v1/resources`, `/v1/guidance`, `/v1/presets`, `/v1/samples`, `/v1/eval/latest`, and `/v1/stack`; and `POST /v1/review`, `/v1/review/stream`, `/v1/report`, and `/v1/keys`. The request cannot choose an upstream; redirects are rejected; request and response sizes and upstream time are bounded.
+- Replit Auth headers terminate on this surface for `/v1/me` and writer-scoped decision routes. Anonymous pages and review remain available. When platform services are present, `DATABASE_URL` selects managed Postgres for decision metadata and the Replit App Storage client stores explicit exports; tests exercise both selections and round trips. Neither path stores screenplay text by default.
 
 ## Owner procedure
 

@@ -35,7 +35,7 @@ from fastapi.staticfiles import StaticFiles
 from google import genai
 from pydantic import BaseModel, Field, model_validator
 
-from . import apikeys, model_armor, replit_platform, telemetry
+from . import apikeys, backend_proxy, model_armor, replit_platform, telemetry
 from .adk_app import agent_engine_resource, explain_grounded_flag
 from .eval import run_benchmark
 from .filters import DISCLAIMER, validate_rendered_text
@@ -71,6 +71,12 @@ _LIMITER = SlidingWindow(window_seconds=60)
 BASE_LIMITS = {"review": 6, "keys": 10, "exports": 10, "decisions": 30}
 _LAST_AGENT_RUNTIME: dict[str, str | None] = {"runtime": None, "model_armor": None}
 PAGES = {"/": "index.html", "/presets": "presets.html", "/developers": "developers.html", "/stack": "stack.html"}
+
+
+@app.middleware("http")
+async def _fixed_backend_proxy(request: Request, call_next):
+    response = await backend_proxy.proxy_request(request)
+    return response if response is not None else await call_next(request)
 
 
 def _version(distribution: str) -> str | None:
