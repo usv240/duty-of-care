@@ -1,5 +1,22 @@
+# Replit product surface for Duty of Care.
+# The same FastAPI app serves the writer-facing site here and the Google agent
+# backend on Cloud Run. On Replit it detects REPL_ID / REPLIT_DEPLOYMENT and
+# reports the Replit services that are actually backing the process.
+entrypoint = "duty_of_care/main.py"
 run = "uvicorn duty_of_care.main:app --host 0.0.0.0 --port 8080"
+modules = ["python-3.12"]
 
 [deployment]
-run = ["sh", "-c", "uvicorn duty_of_care.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+# Autoscale: the product must stay live through judging on a replit.app domain.
 deploymentTarget = "autoscale"
+run = ["sh", "-c", "uvicorn duty_of_care.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+# Scheduled Deployment (configured in the Replit UI, nightly):
+#   python -m scripts.scheduled_recheck
+# Secrets expected on Replit (never a Google service-account key):
+#   DUTY_OF_CARE_BACKEND_URL, DUTY_OF_CARE_API_KEY_SECRET,
+#   DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL, DUTY_OF_CARE_REPLIT_AGENT_COMMIT

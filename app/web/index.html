@@ -3,217 +3,259 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Guidance-grounded pre-review for independent screenwriters.">
+  <meta name="description" content="Guidance-grounded pre-review for independent screenwriters. Built on Gemini, Google ADK, Google Agent Search, Cloud Run, and Replit.">
   <title>Duty of Care</title>
-  <style>
-    :root{color-scheme:light;--paper:#f6f3ec;--ink:#152521;--muted:#53645f;--line:#cbd4cf;--card:#fffdf8;--teal:#0f766e;--teal2:#d8eeea;--warn:#8b4c20;--shadow:0 16px 42px rgba(26,49,42,.09);font-family:Inter,ui-sans-serif,system-ui,sans-serif}
-    html[data-theme="dark"]{color-scheme:dark;--paper:#101916;--ink:#eef7f3;--muted:#adbbb6;--line:#395049;--card:#17231f;--teal:#5ee0d2;--teal2:#173c37;--warn:#ffc395;--shadow:none}
-    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);line-height:1.55}.skip{position:absolute;left:-9999px}.skip:focus{left:1rem;top:1rem;background:var(--card);padding:.75rem;z-index:9}.shell{width:min(1120px,calc(100% - 2rem));margin:auto}
-    header{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}nav{height:66px;display:flex;align-items:center;justify-content:space-between;gap:1rem}.brand{font-weight:800;letter-spacing:.1em}.tools{display:flex;gap:.45rem;align-items:center}button,select,textarea{font:inherit}button{border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:.55rem .9rem;cursor:pointer}button:hover{border-color:var(--teal)}button[aria-pressed="true"],.primary{background:var(--teal);color:#fff;border-color:var(--teal)}html[data-theme="dark"] .primary,html[data-theme="dark"] button[aria-pressed="true"]{color:#071512}
-    main{padding-bottom:9rem}.hero{padding:5.5rem 0 3rem;display:grid;grid-template-columns:1.15fr .85fr;gap:4rem;align-items:center}.eyebrow{font-size:.76rem;font-weight:800;letter-spacing:.15em;color:var(--teal);text-transform:uppercase}.hero h1{font-family:Georgia,serif;font-size:clamp(2.6rem,6vw,5.2rem);line-height:.98;letter-spacing:-.04em;margin:.5rem 0 1.3rem;max-width:12ch}.deck{font-size:1.16rem;color:var(--muted);max-width:62ch}.script{background:var(--card);box-shadow:var(--shadow);padding:2.2rem;border:1px solid var(--line);font-family:ui-monospace,monospace;position:relative;transform:rotate(.8deg)}.annotation{margin:1.5rem -3rem -3.8rem 2rem;background:var(--teal2);border-left:4px solid var(--teal);padding:1rem;font-family:Inter,sans-serif;transform:rotate(-.8deg)}
-    .facts{display:grid;grid-template-columns:repeat(4,1fr);border-block:1px solid var(--line);margin:1rem 0 5rem}.facts div{padding:1.2rem;border-right:1px solid var(--line)}.facts div:last-child{border:0}.facts span{display:block;color:var(--muted);font-size:.8rem}.facts strong{font-size:.95rem}.section{padding:3.5rem 0}.section h2{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.4rem);line-height:1.08;margin:.4rem 0 1.3rem}.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.4rem;box-shadow:var(--shadow)}.card h3{margin:.2rem 0 .5rem}.small{font-size:.86rem;color:var(--muted)}.info{border:0;padding:.1rem .45rem;color:var(--teal);background:transparent;font-weight:bold}.tooltip{border-left:3px solid var(--teal);padding:.8rem 1rem;background:var(--teal2);font-size:.9rem}
-    .workbench{display:grid;grid-template-columns:.9fr 1.1fr;gap:1.2rem;align-items:start}.editor{position:sticky;top:84px}label{display:block;font-weight:700;margin-bottom:.35rem}textarea{width:100%;min-height:270px;resize:vertical;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:1rem;font-family:ui-monospace,monospace;font-size:.9rem}select{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:.55rem}.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.8rem}.results{min-height:360px}.empty{color:var(--muted);padding:3rem 1rem;text-align:center}.flag{margin-bottom:1rem}.flag.dismissed{opacity:.68}.flag.dismissed .flag-body{text-decoration:none}.state{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:800}.clause{border-left:3px solid var(--teal);padding-left:1rem;margin:1rem 0}.clause a{color:var(--teal)}.agent-copy{white-space:pre-wrap}.controls{display:flex;gap:.5rem;flex-wrap:wrap}.danger-note{color:var(--warn)}
-    .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.number{font-family:Georgia,serif;font-size:2.6rem;color:var(--teal)}.sources a{color:var(--teal)}footer{position:fixed;bottom:0;left:0;right:0;background:#123c37;color:#f6fffc;z-index:6;padding:.8rem 0;box-shadow:0 -8px 28px rgba(0,0,0,.15)}footer .shell{display:flex;justify-content:space-between;gap:1rem;align-items:center}footer a{color:#fff}.resource{font-weight:700}
-    [data-reading="plain"] [data-mode="technical"],[data-reading="technical"] [data-mode="plain"]{display:none}.live{position:fixed;right:1rem;top:76px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;width:min(340px,calc(100% - 2rem));box-shadow:var(--shadow);z-index:8}.live[hidden]{display:none}.status-dot{display:inline-block;width:.65rem;height:.65rem;border-radius:50%;background:#b7791f;margin-right:.4rem}.status-dot.up{background:#12805c}.status-dot.down{background:#b54040}
-    @media(max-width:800px){.hero,.workbench{grid-template-columns:1fr}.hero{gap:2rem;padding-top:3rem}.facts{grid-template-columns:1fr 1fr}.facts div:nth-child(2){border-right:0}.flow,.grid{grid-template-columns:1fr}.editor{position:static}.script{transform:none}.annotation{margin:1rem 0 -3rem;transform:none}footer .shell{align-items:flex-start;flex-direction:column;gap:.2rem}.tools button[data-label]{font-size:0}.tools button[data-label]::after{content:attr(data-label);font-size:.8rem}main{padding-bottom:10rem}}
-
-    /* --- coverage workbench --- */
-    .tally{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:1.1rem}
-    .tally div{background:var(--card);padding:.85rem 1rem}.tally b{display:block;font-size:1.5rem;font-family:Georgia,serif;line-height:1.1}.tally span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-    .coverage{display:grid;grid-template-columns:1.02fr .98fr;gap:1.2rem;align-items:start}
-    .page{background:#fffefb;color:#1a1a1a;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:2.4rem 2.6rem;font-family:"Courier New",ui-monospace,monospace;font-size:.92rem;line-height:1.75;position:sticky;top:84px;max-height:78vh;overflow:auto}
-    html[data-theme="dark"] .page{background:#f4f1e8}
-    .page .slug{font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:1.6rem 0 .9rem}.page .slug:first-child{margin-top:0}
-    .page p{margin:0 0 .85rem;white-space:pre-wrap}
-    .page .pagehead{display:flex;justify-content:space-between;font-size:.7rem;letter-spacing:.12em;color:#8a8578;border-bottom:1px solid #e2ddd0;padding-bottom:.6rem;margin-bottom:1.4rem;text-transform:uppercase}
-    mark.trig{background:transparent;color:inherit;border-bottom:2.5px solid var(--tc);padding:.05em 0;cursor:pointer;position:relative}
-    mark.trig:hover,mark.trig.active{background:var(--tcbg)}
-    mark.trig.active{outline:2px solid var(--tc);outline-offset:2px;border-radius:2px}
-    mark.trig sup{font-family:Inter,sans-serif;font-size:.6rem;font-weight:800;color:var(--tc);padding-left:.15em;vertical-align:super}
-    .tc-method_specificity{--tc:#b3261e;--tcbg:#fbe4e2}.tc-framing_as_solution{--tc:#9a5b00;--tcbg:#fcefdc}.tc-absence_of_help_seeking{--tc:#0f766e;--tcbg:#dcf0ed}.tc-romanticisation{--tc:#6b3fa0;--tcbg:#eee5f7}.tc-repetition{--tc:#4a5568;--tcbg:#e6e9ee}.tc-signposting_absence{--tc:#4a5568;--tcbg:#e6e9ee}
-    .notes{display:grid;gap:.9rem}
-    .note{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;transition:opacity .18s,border-color .18s}
-    .note.dismissed{opacity:.55}.note.flash{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
-    .note-top{padding:1rem 1.2rem .8rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem}
-    .note-top h3{margin:0;font-size:.95rem;font-family:ui-monospace,monospace;letter-spacing:.02em}
-    .state{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:800;white-space:nowrap}
-    .chips{display:flex;flex-wrap:wrap;gap:.35rem;padding:.85rem 1.2rem 0}
-    .chip{font-size:.7rem;font-weight:700;letter-spacing:.04em;padding:.28rem .6rem;border-radius:999px;border:1px solid var(--tc);color:var(--tc);background:var(--tcbg);cursor:pointer}
-    html[data-theme="dark"] .chip{background:transparent}
-    .rulelist{margin:.8rem 1.2rem 0;padding:0;list-style:none;font-size:.82rem;color:var(--muted)}.rulelist li{padding-left:1rem;position:relative;margin-bottom:.3rem}.rulelist li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--muted)}
-    .srcs{margin:1rem 1.2rem 0;border-top:1px dashed var(--line);padding-top:.9rem}
-    .srchead{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800;margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem}
-    .src{display:grid;grid-template-columns:auto 1fr;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--line)}.src:last-child{border-bottom:0}
-    .sigil{width:34px;height:34px;border-radius:8px;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:.68rem;font-weight:800;letter-spacing:.02em}
-    html[data-theme="dark"] .sigil{color:#071512}
-    .src q{display:block;font-size:.86rem;line-height:1.5;quotes:none;font-style:italic;color:var(--ink)}
-    .srcmeta{font-size:.72rem;color:var(--muted);margin-top:.3rem;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-    .juris{border:1px solid var(--line);border-radius:4px;padding:.05rem .35rem;font-weight:700;letter-spacing:.04em}
-    .srcmeta a{color:var(--teal)}
-    .revision{margin:1rem 1.2rem 0;background:var(--teal2);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:.9rem 1rem}
-    .revision .who{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--teal);margin-bottom:.45rem;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
-    .revision p{margin:0;font-size:.88rem;white-space:pre-wrap;line-height:1.6}
-    .modelchip{font-size:.62rem;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.1rem .5rem;letter-spacing:.02em;color:var(--muted);font-weight:700}
-    .controls{display:flex;gap:.45rem;flex-wrap:wrap;padding:1rem 1.2rem 1.2rem}.controls button{font-size:.82rem;padding:.45rem .8rem}
-    .audit{background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:1rem 1.2rem;font-size:.84rem}
-    .audit h4{margin:0 0 .6rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-    .audit ol{margin:0;padding-left:1.1rem;color:var(--muted)}.audit li{margin-bottom:.25rem}
-    .clear-note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.6rem;box-shadow:var(--shadow)}
-    .clear-note .state{color:#12805c}
-    @media(max-width:900px){.coverage{grid-template-columns:1fr}.page{position:static;max-height:none;padding:1.6rem}.tally{grid-template-columns:1fr 1fr}}
-
-    .editor{padding:1.5rem}
-    .editrow{display:grid;grid-template-columns:1.55fr .45fr;gap:1.4rem;align-items:start}
-    .editside{display:grid;gap:.6rem;align-content:start}
-    .editside .small{margin:0;line-height:1.45}
-    .samplebtns{display:grid;gap:.45rem}
-    .samplebtns button{width:100%}
-    .editside .primary{width:100%;margin-top:.3rem}
-    @media(max-width:800px){.editrow{grid-template-columns:1fr}}
-  </style>
+  <link rel="stylesheet" href="/static/site.css">
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header><nav class="shell"><span class="brand">DUTY OF CARE</span><div class="tools"><button data-mode-button="plain" aria-pressed="true">Plain</button><button data-mode-button="technical" aria-pressed="false">Technical</button><button data-theme>Dark</button><button data-live data-label="Live stack">Live stack</button></div></nav></header>
   <main id="main">
     <section class="hero shell">
-      <div><p class="eyebrow">For independent screenwriters</p><h1>There is published guidance on writing this scene.</h1><p class="deck" data-mode="plain">Most writers have never seen it. Paste a scene and see what WHO, Samaritans, and national guidance actually say—then keep, dismiss, or question every note.</p><p class="deck" data-mode="technical">Deterministic screenplay triggers select candidate passages. Google Agent Search retrieves source-linked clauses; a Gemini ADK reviewer explains context. No citation means no flag.</p></div>
+      <div><p class="eyebrow">For independent screenwriters</p><h1>There is published guidance on writing this scene.</h1><p class="deck" data-mode="plain">Most writers have never seen it. Paste a scene, upload a draft, or load a demo and see what WHO, Samaritans, and national guidance actually say, then keep, dismiss, or question every note.</p><p class="deck" data-mode="technical">Deterministic screenplay triggers select candidate passages. Google Agent Search retrieves source-linked clauses; a Google ADK agent on Gemini explains them and must self-check its alternative through the hard filter. No citation means no flag. The same service is a keyed public API.</p></div>
       <div class="script" aria-label="Illustrative screenplay page"><strong>INT. KITCHEN — DAWN</strong><p>MARA reaches for the phone. Her friend stays beside her.</p><p>“We can ask for help. We only need to get through this minute.”</p><aside class="annotation"><strong>Writer’s note, not a verdict</strong><br>Guidance describes why help-seeking and coping can matter. The choice stays yours.</aside></div>
     </section>
-    <div class="facts shell"><div><span>Decision owner</span><strong>The writer</strong></div><div><span>Grounding</span><strong>Google Agent Search</strong></div><div><span>Agent</span><strong>ADK + Gemini</strong></div><div><span>Overall score</span><strong>Deliberately absent</strong></div></div>
+    <div class="facts shell"><div><span>Decision owner</span><strong>The writer</strong></div><div><span>Grounding</span><strong>Google Agent Search</strong></div><div><span>Agent</span><strong>Google ADK + Gemini</strong></div><div><span>Overall score</span><strong>Deliberately absent</strong></div></div>
 
-    <section class="section shell"><p class="eyebrow">The honest premise</p><h2>The evidence is consequential—and contested.</h2><div class="grid"><article class="card"><h3 data-mode="plain">We show both sides.</h3><h3 data-mode="technical">Association is not a settled causal estimate.</h3><p>Some research associates fictional portrayal with changed suicide outcomes; reanalysis disputes whether the portrayal explains the underlying trend. The product does not use uncertainty as permission to overstate.</p><details><summary>Why this matters</summary><p class="tooltip">An informed reviewer should see the disagreement, source dates, and limits—not a dramatic statistic stripped of context.</p></details></article><article class="card"><h3>We are not replacing anyone.</h3><p>Samaritans runs a human Media Advisory service. This pre-review extends access and routes difficult cases toward expertise; it is not a substitute for it.</p><p class="small">No clinical claim. No compliance claim. No censorship path.</p></article></div></section>
+    <section class="section shell" id="review"><p class="eyebrow">Try the complete workflow</p><h2>Six demo drafts, or bring your own.</h2>
+      <form class="card editor" data-form>
+        <div class="editrow">
+          <div><label for="scene">Screenplay — paste, upload, or load a demo preset</label><textarea id="scene" name="screenplay" spellcheck="false" placeholder="INT. KITCHEN - DAWN&#10;…"></textarea><p class="small" data-source-note>Nothing is uploaded until you press Review. Your text is not stored.</p></div>
+          <div class="editside">
+            <label for="preset">Demo preset</label><select id="preset" name="preset"><option value="">Loading presets…</option></select>
+            <label class="filebox" for="file">Upload .fountain, .txt, .md, or Final Draft .fdx<input id="file" type="file" accept=".fountain,.txt,.md,.fdx,text/plain"></label>
+            <label for="region">Guidance region</label><select id="region" name="region"><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option></select>
+            <button class="primary" type="submit">Review against published guidance</button>
+            <p class="small" data-run-state>Nothing is blocked. Your scene is sent only when you press Review.</p><ol class="progress" data-progress hidden></ol>
+            <a class="small" href="/presets">Read and download every preset →</a>
+          </div>
+        </div>
+      </form>
+      <section class="results" data-results aria-live="polite"><div class="card empty">Load a preset, upload a draft, or paste a scene to see the difference between a concerning depiction and a conforming one.</div></section>
+    </section>
 
-    <section class="section shell" id="review"><p class="eyebrow">Try the complete workflow</p><h2>One concerning scene. One conforming scene. No keyword theatre.</h2><form class="card editor" data-form><div class="editrow"><div><label for="scene">Screenplay scene — paste your own or load a sample</label><textarea id="scene" name="screenplay" spellcheck="false"></textarea></div><div class="editside"><label for="region">Guidance region</label><select id="region" name="region"><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option></select><div class="samplebtns"><button type="button" data-sample="flagged">Load guidance case</button><button type="button" data-sample="not_flagged">Load no-flag case</button></div><button class="primary" type="submit">Review against published guidance</button><p class="small" data-run-state>Nothing is blocked. Your scene is sent only when you press Review.</p></div></div></form><section class="results" data-results aria-live="polite"><div class="card empty">Load either sample — or paste your own scene — to see the difference.</div></section></section>
+    <section class="section shell"><p class="eyebrow">The honest premise</p><h2>The evidence is consequential, and contested.</h2><div class="grid"><article class="card"><h3 data-mode="plain">We show both sides.</h3><h3 data-mode="technical">Association is not a settled causal estimate.</h3><p>Some research associates fictional portrayal with changed suicide outcomes; reanalysis disputes whether the portrayal explains the underlying trend. The product does not use uncertainty as permission to overstate.</p><details><summary>Why this matters</summary><p class="tooltip">An informed reviewer should see the disagreement, source dates, and limits, not a dramatic statistic stripped of context.</p></details></article><article class="card"><h3>We are not replacing anyone.</h3><p>Samaritans runs a human Media Advisory service. This pre-review extends access and routes difficult cases toward expertise; it is not a substitute for it.</p><p class="small">No clinical claim. No compliance claim. No censorship path.</p></article></div></section>
 
-    <section class="section shell"><p class="eyebrow">Architecture</p><h2>Three layers prevent “a prompt with a UI.”</h2><div class="flow"><article class="card"><span class="number">01</span><h3>Auditable triggers</h3><p>Pure code shows the exact phrase and rule that produced a candidate. It cannot issue a guidance flag.</p></article><article class="card"><span class="number">02</span><h3>Retrieved clauses</h3><p>Google Agent Search returns a versioned source URL. Gemini can explain only what was retrieved.</p></article><article class="card"><span class="number">03</span><h3>Writer control</h3><p>Accept, dismiss, or request expert review. Dismissal leaves the reasoning visible. No overall score exists.</p></article></div></section>
+
+    <section class="section shell"><p class="eyebrow">The fine print, in full</p><h2>Eight things a careful reader will want to know.</h2><div class="grid fineprint">
+      <details class="card"><summary>The evidence is contested</summary><p>Bridge et al., <em>JAMA Psychiatry</em> 2019 associated one series release with increased US youth suicides. The Annenberg Public Policy Center reanalysis found no clear evidence of contagion after controlling for the underlying rise. We cite both. Overstating contested evidence is how a tool like this loses an informed reader.</p></details>
+      <details class="card"><summary>Where the published guidance comes from</summary><p>WHO, <em>Preventing suicide: a resource for filmmakers and others working on stage and screen</em>; Samaritans' guidance on depictions of suicide and self-harm in drama and film; the 2019 National Recommendations for Depicting Suicide (National Action Alliance, SAMHSA, Entertainment Industries Council); Mindframe's resource for stage and screen (Australia); and the Mindset guide's suicide chapter (Canada). Thirty-six attributed clauses, each with a source link and version.</p></details>
+      <details class="card"><summary>We are not replacing anyone</summary><p>Samaritans' Media Advice team runs a script review service, staffed by people, with finite capacity. This exists to reach writers that service will never have capacity to serve, and it routes users toward expert review where one is warranted.</p></details>
+      <details class="card"><summary>This is not certification</summary><p>We never display "your scene is safe." A pre-review can only report what it detected against a corpus. It is not clinical or professional judgement and cannot substitute for it.</p></details>
+      <details class="card"><summary>The Papageno effect</summary><p>Depicting help-seeking, coping and recovery is associated in the literature with protective rather than harmful effects. The tool explains the mechanism rather than issuing a verdict, so a writer learns instead of complying.</p></details>
+      <details class="card"><summary>Never more explicit</summary><p>An output filter compares the specificity of any suggested alternative against the writer's original and rejects it if method detail increased. The agent must run that filter on its own draft before it answers, the API runs it again, and Google Cloud Model Armor screens the result. A safety tool that generates more harmful detail than it found would be worse than nothing.</p></details>
+      <details class="card"><summary>No overall score</summary><p>Deliberately absent. A single rating invites optimisation, and optimising a script toward a safety number is exactly the wrong behaviour.</p></details>
+      <details class="card"><summary>Why Replit, and why Google Cloud</summary><p>The product surface must be something a writer can simply open: Replit hosts the deployed app, keeps a signed-in writer's decisions, and re-checks the corpus nightly. The agent itself is a Google ADK agent on Gemini, deployable to Vertex AI Agent Engine, grounded by Google Agent Search, and called over HTTP.</p></details>
+    </div></section>
+    <section class="section shell"><p class="eyebrow">Architecture</p><h2>Three layers prevent “a prompt with a UI.”</h2><div class="grid3"><article class="card"><span class="number">01</span><h3>Auditable triggers</h3><p>Pure code shows the exact phrase and rule that produced a candidate. It cannot issue a guidance flag.</p></article><article class="card"><span class="number">02</span><h3>Retrieved clauses, explained</h3><p>Google Agent Search returns a versioned source URL. A Google ADK agent on Gemini can explain only what was retrieved, and must run the safety filter on its own alternative before answering.</p></article><article class="card"><span class="number">03</span><h3>Writer control</h3><p>Accept, dismiss, or request expert review. Dismissal leaves the reasoning visible. On Replit, signed-in writers can keep their decisions. No overall score exists.</p></article></div></section>
+
+    <section class="section shell"><p class="eyebrow">Integrate it</p><h2>The same review is a public API.</h2><div class="grid"><article class="card"><h3>Mint a key in one click</h3><p>No account. Anonymous calls keep working; a key raises the limits and names the caller in <code>meta</code>. Every response carries the disclaimer as a required field, so an integration cannot strip it by accident.</p><p><a class="btn" href="/developers">Open the developer page and run it live →</a></p></article><article class="card"><h3>Every sponsor tool, used at runtime</h3><p>The ribbon at the top of every page shows which Google Cloud and Replit services are answering right now. Status is earned by a real round trip, not painted on.</p><p><a class="btn" href="/stack">See how each tool is used →</a></p></article></div></section>
 
     <section class="section shell sources"><p class="eyebrow">Approved corpus</p><h2>Real guidance, not model memory.</h2><p><a href="https://www.who.int/publications/i/item/preventing-suicide-a-resource-for-filmmakers-and-others-working-on-stage-and-screen">World Health Organization</a> · <a href="https://www.samaritans.org/about-samaritans/media-guidelines/guidance-portrayals-suicide-and-self-harm-drama/">Samaritans</a> · <a href="https://theactionalliance.org/resource/national-recommendations-depicting-suicide">National Action Alliance</a></p><p class="small">Corpus records include publisher, title, jurisdiction, version, retrieval date, applicable trigger classes, and source URL. Multi-jurisdiction results remain separate.</p></section>
   </main>
-
-  <aside class="live" data-live-panel hidden><strong>Live integrations</strong><p class="small">Real round trips, cached for one minute.</p><div data-health>Waiting…</div><button data-live-close>Close</button></aside>
-  <footer><div class="shell"><span class="resource">In the U.S.: call or text 988. In immediate danger, contact local emergency services.</span><span><a href="https://findahelpline.com/">Find a helpline by country</a> · <a href="https://github.com/usv240/duty-of-care">Source</a></span></div></footer>
+  <footer class="crisis"><div class="shell"><span class="resource">In the U.S.: call or text 988. In immediate danger, contact local emergency services.</span><span><a href="https://findahelpline.com/">Find a helpline by country</a> · <a href="https://github.com/usv240/duty-of-care">Source</a></span></div></footer>
+  <script src="/static/site.js"></script>
   <script>
-    const $=(q)=>document.querySelector(q);let samples={};
-    function setMode(mode){document.documentElement.dataset.reading=mode;document.querySelectorAll('[data-mode-button]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modeButton===mode)));localStorage.setItem('care-mode',mode)}
-    setMode(localStorage.getItem('care-mode')==='technical'?'technical':'plain');document.querySelectorAll('[data-mode-button]').forEach(b=>b.onclick=()=>setMode(b.dataset.modeButton));
-    $('[data-theme]').onclick=()=>{const dark=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=dark?'dark':'';$('[data-theme]').textContent=dark?'Light':'Dark'};
-    async function loadSamples(){const r=await fetch('/v1/samples');samples=(await r.json()).data;$('[data-sample="flagged"]').onclick=()=>{$('#scene').value=samples.flagged};$('[data-sample="not_flagged"]').onclick=()=>{$('#scene').value=samples.not_flagged};$('#scene').value=samples.flagged}
-    function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n}
-    const CLASS_LABEL={method_specificity:'Method specificity',framing_as_solution:'Framed as solution',absence_of_help_seeking:'No help-seeking',romanticisation:'Romanticisation',repetition:'Repetition',signposting_absence:'No signpost'};
-    const decisions=[];
-    function initials(publisher){return publisher.split(/\s+/).filter(w=>/^[A-Za-z]/.test(w)).slice(0,3).map(w=>w[0].toUpperCase()).join('')}
-    function scenePage(scenes,triggers){
-      const page=el('div',undefined,'page');
-      const head=el('div',undefined,'pagehead');head.append(el('span','Scene coverage'),el('span',scenes.length+(scenes.length===1?' scene':' scenes')));page.append(head);
-      scenes.forEach(scene=>{
-        page.append(el('div',scene.heading,'slug'));
-        const spans=triggers.filter(t=>t.scene_id===scene.scene_id&&t.match_start>=0).sort((a,b)=>a.match_start-b.match_start);
-        const body=el('p');let cursor=0;
-        spans.forEach(t=>{
-          if(t.match_start<cursor)return;
-          if(t.match_start>cursor)body.append(document.createTextNode(scene.text.slice(cursor,t.match_start)));
-          const m=el('mark',scene.text.slice(t.match_start,t.match_end),'trig tc-'+t.trigger_class);
-          m.dataset.scene=scene.scene_id;m.dataset.klass=t.trigger_class;
-          m.title=CLASS_LABEL[t.trigger_class]||t.trigger_class;
-          m.append(el('sup','▲'));
-          m.onclick=()=>focusNote(scene.scene_id,m);
-          body.append(m);cursor=t.match_end;
-        });
-        body.append(document.createTextNode(scene.text.slice(cursor)));
-        page.append(body);
-      });
-      return page;
+    let presets = [], currentPreset = null, lastResult = null, writer = null;
+    const decisions = [];
+    const $ = window.$q;
+
+    async function init() {
+      try {
+        const p = await careFetch('/v1/presets'); presets = p.data.presets;
+        const sel = $('#preset'); sel.replaceChildren();
+        const none = el('option', 'Your own text'); none.value = ''; sel.append(none);
+        presets.forEach(x => { const o = el('option', x.title + (x.expect_flag ? ' · expects notes' : ' · expects no note')); o.value = x.id; sel.append(o); });
+        sel.onchange = () => loadPreset(sel.value);
+        const params = new URLSearchParams(location.search);
+        await loadPreset(params.get('preset') || 'guidance-case');
+        if (params.get('run')) $('[data-form]').requestSubmit();
+      } catch (err) { $('[data-run-state]').textContent = 'Presets unavailable: ' + err.message; }
+      try { const m = await careFetch('/v1/me'); writer = m.data.signed_in ? m.data.identity : null; } catch { writer = null; }
     }
-    function focusNote(sceneId,mark){
-      document.querySelectorAll('mark.trig').forEach(x=>x.classList.remove('active'));
-      if(mark)mark.classList.add('active');
-      const note=document.querySelector('[data-note="'+sceneId+'"]');
-      if(!note)return;
-      note.classList.add('flash');note.scrollIntoView({behavior:'smooth',block:'center'});
-      setTimeout(()=>note.classList.remove('flash'),1400);
+    async function loadPreset(id) {
+      if (!id) { currentPreset = null; $('[data-source-note]').textContent = 'Nothing is uploaded until you press Review. Your text is not stored.'; return; }
+      const p = await careFetch('/v1/presets/' + id); currentPreset = p.data;
+      $('#preset').value = id; $('#scene').value = p.data.text; $('#region').value = p.data.region;
+      $('[data-source-note]').textContent = p.data.title + ' · ' + p.data.logline + ' Expectation: ' + p.data.expectation;
     }
-    function highlightFor(sceneId,klass){
-      document.querySelectorAll('mark.trig').forEach(x=>x.classList.remove('active'));
-      const target=document.querySelector('mark.trig[data-scene="'+sceneId+'"][data-klass="'+klass+'"]');
-      if(target){target.classList.add('active');target.scrollIntoView({behavior:'smooth',block:'center'})}
+    $('#file').onchange = async e => {
+      const file = e.target.files[0]; if (!file) return;
+      try { $('#scene').value = await parseScreenplayFile(file); currentPreset = null; $('#preset').value = ''; $('[data-source-note]').textContent = file.name + ' parsed in your browser. It is sent only when you press Review and is not stored.'; }
+      catch (err) { $('[data-source-note]').textContent = 'Could not read ' + file.name + ': ' + err.message; }
+    };
+    $('#scene').oninput = () => { if (currentPreset && $('#scene').value.trim() !== currentPreset.text.trim()) { currentPreset = null; $('#preset').value = ''; } };
+
+    function focusNote(sceneId, mark) {
+      document.querySelectorAll('mark.trig').forEach(x => x.classList.remove('active'));
+      if (mark) mark.classList.add('active');
+      const note = document.querySelector('[data-note="' + sceneId + '"]'); if (!note) return;
+      note.classList.add('flash'); note.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => note.classList.remove('flash'), 1400);
     }
-    function auditPanel(){
-      const box=el('div',undefined,'audit');box.append(el('h4','Writer decision record'));
-      const ol=el('ol');
-      if(!decisions.length)ol.append(el('li','No decision recorded yet. Nothing is blocked and nothing is auto-applied.'));
-      else decisions.forEach(d=>ol.append(el('li',d)));
-      box.append(ol);return box;
+    function highlightFor(sceneId, klass) {
+      document.querySelectorAll('mark.trig').forEach(x => x.classList.remove('active'));
+      const t = document.querySelector('mark.trig[data-scene="' + sceneId + '"][data-klass="' + klass + '"]');
+      if (t) { t.classList.add('active'); t.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     }
-    function refreshAudit(){const host=$('[data-audit]');if(host)host.replaceChildren(auditPanel())}
-    function render(data){
-      const host=$('[data-results]');host.replaceChildren();
-      const scenes=data.scenes||[];const cands=data.trigger_candidates||[];const flags=data.grounded_flags||[];
-      const clauseCount=flags.reduce((n,f)=>n+f.clauses.length,0);
-      const classes=new Set(cands.map(t=>t.trigger_class));
-      const tally=el('div',undefined,'tally');
-      [[scenes.length,'scenes parsed'],[classes.size,'trigger classes'],[clauseCount,'clauses retrieved'],['Writer','decides']].forEach(pair=>{const d=el('div');d.append(el('b',String(pair[0])),el('span',pair[1]));tally.append(d)});
+    function initials(p) { return p.split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).slice(0, 3).map(w => w[0].toUpperCase()).join(''); }
+    function auditPanel() {
+      const box = el('div', undefined, 'audit'); box.append(el('h4', 'Writer decision record' + (writer ? ' · saved for ' + (writer.name || writer.user_id) : ' · this browser only')));
+      const ol = el('ol');
+      if (!decisions.length) ol.append(el('li', 'No decision recorded yet. Nothing is blocked and nothing is auto-applied.' + (writer ? '' : ' Sign in on the Replit surface to keep decisions between visits.')));
+      else decisions.forEach(d => ol.append(el('li', d)));
+      box.append(ol); return box;
+    }
+    function refreshAudit() { const h = $('[data-audit]'); if (h) h.replaceChildren(auditPanel()); }
+
+    async function recordDecision(flag, decision, reason, stateEl, note) {
+      const label = { accepted: 'accepted', dismissed: 'dismissed', expert_review: 'sent for expert review' }[decision];
+      stateEl.textContent = label + ' · reasoning stays visible';
+      note.classList.toggle('dismissed', decision === 'dismissed');
+      let where = 'this browser';
+      if (writer) {
+        try {
+          const scene = (lastResult.data.scenes.find(s => s.scene_id === flag.scene_id) || {}).text || '';
+          const r = await careFetch('/v1/decisions', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ flag_id: flag.flag_id, scene_id: flag.scene_id, heading: flag.heading, decision, reason, clause_ids: flag.clauses.map(c => c.clause_id), scene_text: scene }) });
+          where = r.data.backend.replaceAll('_', ' ');
+        } catch (err) { where = 'not saved (' + err.message + ')'; }
+      }
+      decisions.push(new Date().toLocaleTimeString() + ' — ' + flag.heading + ': ' + label + (reason ? ' — “' + reason + '”' : '') + ' · ' + where);
+      refreshAudit();
+    }
+
+    function render(data, meta) {
+      const host = $('[data-results]'); host.replaceChildren();
+      const scenes = data.scenes || [], cands = data.trigger_candidates || [], flags = data.grounded_flags || [];
+      const clauseCount = flags.reduce((n, f) => n + f.clauses.length, 0);
+      const classes = new Set(cands.map(t => t.trigger_class));
+      const tally = el('div', undefined, 'tally');
+      [[scenes.length, 'scenes parsed'], [classes.size, 'trigger classes'], [clauseCount, 'clauses retrieved'], [flags.length, 'guidance notes'], ['Writer', 'decides']].forEach(pair => { const d = el('div'); d.append(el('b', String(pair[0])), el('span', pair[1])); tally.append(d); });
       host.append(tally);
-      const cov=el('div',undefined,'coverage');
-      cov.append(scenePage(scenes,cands));
-      const notes=el('div',undefined,'notes');
-      if(!flags.length){
-        const c=el('article',undefined,'clear-note');
-        c.append(el('span','No guidance flag raised','state'),el('h3','The subject alone is not the test.'),el('p','No deterministic candidate combined with an applicable retrieved clause survived the gate. Underlines in the page, if any, show what code noticed and chose not to escalate. This is still not certification.'));
+      if (meta && meta.gate) {
+        const gate = el('div', undefined, 'gate');
+        gate.append(el('span', 'gate', 'lbl'));
+        meta.gate.passed.forEach(g => gate.append(el('span', '✓ ' + g, 'ok')));
+        meta.gate.failed.forEach(g => gate.append(el('span', '✗ ' + g, 'no')));
+        gate.append(el('span', meta.latency_ms + ' ms · ' + meta.request_id + ' · ' + meta.caller.tier));
+        host.append(gate);
+      }
+      const actions = el('div', undefined, 'actions');
+      const dj = el('button', 'Download JSON'); dj.type = 'button'; dj.onclick = () => downloadText('duty-of-care-' + meta.request_id + '.json', JSON.stringify({ data, meta }, null, 2), 'application/json');
+      const dm = el('button', 'Download Markdown report'); dm.type = 'button'; dm.onclick = async () => {
+        try { const r = await fetch('/v1/report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: currentPreset ? currentPreset.title : 'submitted screenplay', review: data, meta }) }); downloadText('duty-of-care-' + meta.request_id + '.md', await r.text(), 'text/markdown'); } catch (err) { dm.textContent = 'Report failed: ' + err.message; }
+      };
+      const ex = el('button', 'Export to storage'); ex.type = 'button'; const exNote = el('span', '', 'small');
+      ex.onclick = async () => {
+        ex.disabled = true;
+        try { const r = await careFetch('/v1/exports', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: currentPreset ? currentPreset.title : 'submitted screenplay', review: data, meta }) }); const a = el('a', 'stored in ' + r.data.backend.replaceAll('_', ' ') + ' → ' + r.data.export_id); a.href = r.data.url; exNote.replaceChildren(a); }
+        catch (err) { exNote.textContent = err.message; ex.disabled = false; }
+      };
+      actions.append(dj, dm, ex, exNote);
+      host.append(actions);
+      const cov = el('div', undefined, 'coverage');
+      cov.append(screenplayPage(scenes, cands, focusNote));
+      const notes = el('div', undefined, 'notes');
+      if (!flags.length) {
+        const c = el('article', undefined, 'clear-note');
+        const why = data.grounding_status === 'available' ? 'No deterministic candidate combined with an applicable retrieved clause survived the gate. Underlines in the page, if any, show what code noticed and chose not to escalate.' : 'Grounding is not configured on this host, so no note can be raised here. Underlines show what code noticed.';
+        c.append(el('span', 'No guidance note raised', 'state'), el('h3', 'The subject alone is not the test.'), el('p', why + ' This is still not certification.'));
         notes.append(c);
       }
-      flags.forEach(flag=>{
-        const note=el('article',undefined,'note');note.dataset.note=flag.scene_id;
-        const top=el('div',undefined,'note-top');
-        const state=el('span','Open · writer decides','state');
-        top.append(el('h3',flag.heading),state);note.append(top);
-        const chips=el('div',undefined,'chips');
-        flag.triggers.forEach(t=>{const c=el('button',CLASS_LABEL[t.trigger_class]||t.trigger_class,'chip tc-'+t.trigger_class);c.type='button';c.onclick=()=>highlightFor(flag.scene_id,t.trigger_class);chips.append(c)});
+      flags.forEach(flag => {
+        const note = el('article', undefined, 'note'); note.dataset.note = flag.scene_id;
+        const top = el('div', undefined, 'note-top');
+        const state = el('span', 'Open · writer decides', 'state');
+        top.append(el('h3', flag.document_level ? 'WHOLE DOCUMENT' : flag.heading), state); note.append(top);
+        const chips = el('div', undefined, 'chips');
+        flag.triggers.forEach(t => { const c = el('button', CLASS_LABEL[t.trigger_class] || t.trigger_class, 'chip tc-' + t.trigger_class); c.type = 'button'; c.onclick = () => highlightFor(flag.scene_id, t.trigger_class); chips.append(c); });
         note.append(chips);
-        const rules=el('ul',undefined,'rulelist');
-        flag.triggers.forEach(t=>rules.append(el('li',t.rule)));
-        note.append(rules);
-        const srcs=el('div',undefined,'srcs');
-        const sh=el('div',undefined,'srchead');sh.append(el('span','Retrieved guidance · '+flag.clauses.length+(flag.clauses.length===1?' clause':' clauses')));srcs.append(sh);
-        flag.clauses.forEach(c=>{
-          const row=el('div',undefined,'src');
-          row.append(el('div',initials(c.publisher),'sigil'));
-          const body=el('div');body.append(el('q',c.clause));
-          const meta=el('div',undefined,'srcmeta');
-          meta.append(el('span',c.jurisdiction,'juris'),el('span',c.publisher));
-          if(c.version)meta.append(el('span','v'+c.version));
-          const a=el('a','Open source ↗');a.href=c.source_url;a.target='_blank';a.rel='noreferrer';meta.append(a);
-          body.append(meta);row.append(body);srcs.append(row);
+        const rules = el('ul', undefined, 'rulelist'); flag.triggers.forEach(t => rules.append(el('li', t.rule + (t.matched_text ? ' Matched: “' + t.matched_text + '”.' : '')))); note.append(rules);
+        const srcs = el('div', undefined, 'srcs');
+        const sh = el('div', undefined, 'srchead'); sh.append(el('span', 'Retrieved by Google Agent Search · ' + flag.clauses.length + (flag.clauses.length === 1 ? ' clause' : ' clauses'))); srcs.append(sh);
+        flag.clauses.forEach(c => {
+          const row = el('div', undefined, 'src'); row.append(el('div', initials(c.publisher), 'sigil'));
+          const body = el('div'); body.append(el('q', c.clause));
+          const meta2 = el('div', undefined, 'srcmeta'); meta2.append(el('span', c.jurisdiction, 'juris'), el('span', c.publisher)); if (c.version) meta2.append(el('span', 'v' + c.version));
+          const a = el('a', 'Open source ↗'); a.href = c.source_url; a.target = '_blank'; a.rel = 'noreferrer'; meta2.append(a);
+          body.append(meta2); row.append(body); srcs.append(row);
         });
         note.append(srcs);
-        const rev=el('div',undefined,'revision');
-        const who=el('div',undefined,'who');
-        who.append(el('span','Suggested alternative · preserves dramatic intent'));
-        if(flag.agent&&flag.agent.model)who.append(el('span',flag.agent.model,'modelchip'));
-        if(flag.agent&&flag.agent.safety_filter)who.append(el('span','filter: '+flag.agent.safety_filter,'modelchip'));
-        rev.append(who,el('p',(flag.agent&&flag.agent.text)||'No alternative was generated.'));
-        note.append(rev);
-        const controls=el('div',undefined,'controls');
-        [['Accept note','accepted'],['Dismiss note','dismissed'],['Request expert review','sent for expert review']].forEach(pair=>{
-          const b=el('button',pair[0]);b.type='button';
-          b.onclick=()=>{
-            state.textContent=pair[1]+' · reasoning stays visible';
-            note.classList.toggle('dismissed',pair[1]==='dismissed');
-            decisions.push(new Date().toLocaleTimeString()+' — '+flag.heading+': '+pair[1]);
-            refreshAudit();
-          };
-          controls.append(b);
-        });
-        note.append(controls);
-        notes.append(note);
+        if (flag.jurisdictions && Object.keys(flag.jurisdictions).length > 1) {
+          const jp = el('div', undefined, 'jurisdictions');
+          const names = Object.entries(flag.jurisdictions).map(([j, ids]) => j + ' (' + ids.length + ')').join(' · ');
+          const div = (flag.divergence || []).map(d => (CLASS_LABEL[d.trigger_class] || d.trigger_class) + ' is addressed by ' + d.jurisdictions.join(' and ')).join('; ');
+          jp.append(el('strong', 'Guidance by jurisdiction: ' + names + '. '), document.createTextNode((div ? div + '. ' : '') + 'Shown separately, not reconciled; the writer chooses which applies.'));
+          note.append(jp);
+        }
+        const rev = el('div', undefined, 'revision'); const who = el('div', undefined, 'who');
+        who.append(el('span', 'Google ADK reviewer · suggested alternative, preserves dramatic intent'));
+        if (flag.agent && flag.agent.model) who.append(el('span', flag.agent.model, 'modelchip'));
+        if (flag.agent && flag.agent.safety_filter) who.append(el('span', 'filter: ' + flag.agent.safety_filter, 'modelchip'));
+        if (flag.agent && typeof flag.agent.self_check_calls === 'number') who.append(el('span', 'self-checks: ' + flag.agent.self_check_calls, 'modelchip'));
+        if (flag.agent && flag.agent.runtime) who.append(el('span', { vertex_ai_agent_engine: 'Agent Engine', adk_in_process: 'ADK in-process', adk_in_process_fallback: 'ADK in-process (Agent Engine fallback)' }[flag.agent.runtime] || flag.agent.runtime, 'modelchip'));
+        if (flag.agent && flag.agent.model_armor) who.append(el('span', 'Model Armor: ' + (flag.agent.model_armor.status === 'screened' ? (flag.agent.model_armor.match ? 'withheld' : 'clear') : flag.agent.model_armor.status), 'modelchip'));
+        rev.append(who, el('p', (flag.agent && flag.agent.text) || 'No alternative was generated.')); note.append(rev);
+        const controls = el('div', undefined, 'controls');
+        const reason = el('input'); reason.type = 'text'; reason.placeholder = 'Your reason (kept with the decision)'; reason.maxLength = 2000;
+        [['Accept note', 'accepted'], ['Dismiss note', 'dismissed'], ['Request expert review', 'expert_review']].forEach(pair => { const b = el('button', pair[0]); b.type = 'button'; b.onclick = () => recordDecision(flag, pair[1], reason.value.trim(), state, note); controls.append(b); });
+        controls.append(reason); note.append(controls); notes.append(note);
       });
-      const auditHost=el('div');auditHost.dataset.audit='';auditHost.append(auditPanel());
-      notes.append(auditHost);
-      cov.append(notes);host.append(cov);
+      const leftover = cands.filter(c => !flags.some(f => f.scene_id === c.scene_id));
+      if (leftover.length) {
+        const box = el('div', undefined, 'audit'); box.append(el('h4', 'Noticed by code, not escalated'));
+        const ol = el('ol'); leftover.forEach(c => ol.append(el('li', (c.scene_id === 'document' ? 'Whole document' : c.scene_id) + ' · ' + (CLASS_LABEL[c.trigger_class] || c.trigger_class) + ' · ' + c.rule))); box.append(ol); notes.append(box);
+      }
+      const auditHost = el('div'); auditHost.dataset.audit = ''; auditHost.append(auditPanel()); notes.append(auditHost);
+      cov.append(notes); host.append(cov);
     }
-    $('[data-form]').onsubmit=async e=>{e.preventDefault();const state=$('[data-run-state]');state.textContent='Retrieving clauses and running the grounded reviewer…';const body={screenplay:$('#scene').value,region:$('#region').value};try{const r=await fetch('/v1/review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.detail?.message||p.error?.message||'Review failed');render(p.data);state.textContent='Complete · writer still decides.'}catch(err){state.textContent=err.message;const c=el('div',undefined,'card danger-note');c.textContent='The review failed closed. No guidance result was invented.';$('[data-results]').replaceChildren(c)}};
-    $('[data-live]').onclick=async()=>{const panel=$('[data-live-panel]');panel.hidden=false;const host=$('[data-health]');host.textContent='Checking…';try{const r=await fetch('/health');const p=await r.json();host.replaceChildren();Object.entries(p.integrations).forEach(([name,v])=>{const row=el('p');const dot=el('span',undefined,`status-dot ${v.ok?'up':'down'}`);row.append(dot,document.createTextNode(`${name.replaceAll('_',' ')} · ${v.ok?'available':'unavailable'}`));host.append(row)})}catch{host.textContent='Health check unavailable'}};$('[data-live-close]').onclick=()=>{$('[data-live-panel]').hidden=true};
-    loadSamples();
+
+    async function reviewStreaming(body, onEvent) {
+      const r = await fetch('/v1/review/stream', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      if (!r.ok || !r.body) {
+        const p = await r.json().catch(() => ({}));
+        throw new Error((p.error && (p.error.message + ' ' + (p.error.fix || ''))) || ('HTTP ' + r.status));
+      }
+      const reader = r.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; let result = null;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let nl;
+        while ((nl = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.slice(0, nl).trim(); buffer = buffer.slice(nl + 1);
+          if (!line) continue;
+          const ev = JSON.parse(line);
+          if (ev.event === 'result') result = ev;
+          else if (ev.event === 'error') throw new Error(ev.error.message + ' ' + (ev.error.fix || ''));
+          else onEvent(ev);
+        }
+      }
+      if (!result) throw new Error('The stream ended without a result.');
+      return result;
+    }
+    $('[data-form]').onsubmit = async e => {
+      e.preventDefault();
+      const state = $('[data-run-state]'); const btn = e.target.querySelector('.primary'); btn.disabled = true;
+      state.textContent = 'Retrieving clauses through Agent Search and running the ADK reviewer…';
+      const text = $('#scene').value;
+      const body = { screenplay: text, region: $('#region').value };
+      if (currentPreset && text.trim() === currentPreset.text.trim()) body.preset_id = currentPreset.id;
+      const prog = $('[data-progress]'); prog.replaceChildren(); prog.hidden = false;
+      const step = (text, cls) => { const li = el('li', text, cls); prog.append(li); return li; };
+      try {
+        const p = await reviewStreaming(body, ev => {
+          if (ev.event === 'parsed') step(ev.scenes + ' scene(s) parsed · ' + ev.candidates + ' deterministic candidate(s)' + (ev.trigger_classes.length ? ': ' + ev.trigger_classes.map(k => CLASS_LABEL[k] || k).join(', ') : ''), 'done');
+          else if (ev.event === 'retrieving') step('Agent Search · retrieving clauses for ' + (ev.scene_id === 'document' ? 'the whole document' : ev.heading), 'busy');
+          else if (ev.event === 'retrieved') { const li = prog.lastElementChild; if (li) { li.className = 'done'; li.textContent = 'Agent Search · ' + ev.clause_count + ' clause(s) for ' + (ev.scene_id === 'document' ? 'the whole document' : ev.scene_id) + (ev.publishers.length ? ' from ' + ev.publishers.join(', ') : ''); } }
+          else if (ev.event === 'explaining') step((ev.runtime === 'vertex_ai_agent_engine' ? 'Agent Engine' : 'ADK') + ' · GuidanceContextReviewer explaining ' + ev.scene_id, 'busy');
+          else if (ev.event === 'explained') step('Explained ' + ev.scene_id + ' · filter ' + ev.safety_filter + ' · self-checks ' + ev.self_check_calls + ' · Model Armor ' + ev.model_armor + ' · ' + (ev.runtime === 'vertex_ai_agent_engine' ? 'Agent Engine' : 'in-process'), 'done');
+          else if (ev.event === 'complete') step(ev.notes + ' guidance note(s) in ' + ev.latency_ms + ' ms', 'done');
+        });
+        lastResult = p; decisions.length = 0; render(p.data, p.meta); state.textContent = 'Complete · writer still decides.';
+        $('[data-results]').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (err) {
+        state.textContent = err.message; const c = el('div', undefined, 'card danger-note'); c.textContent = 'The review failed closed. No guidance result was invented. ' + err.message; $('[data-results]').replaceChildren(c);
+      } finally { btn.disabled = false; }
+    };
+    document.addEventListener('shell:ready', init);
   </script>
 </body>
 </html>

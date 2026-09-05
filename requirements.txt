@@ -2,5 +2,11 @@ fastapi==0.141.1
 google-adk[gcp]==2.7.1
 google-cloud-discoveryengine==0.13.12
 google-genai==2.12.1
+# Vertex AI Agent Engine client for the managed agent runtime
+google-cloud-aiplatform[agent_engines]==1.153.1
+cloudpickle==3.1.2
 pydantic==2.12.5
 uvicorn[standard]==0.41.0
+# Replit platform adapters (used when the app runs on Replit; safe elsewhere)
+psycopg[binary]==3.3.5
+replit-object-storage==1.0.2

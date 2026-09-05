@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" data-reading="plain">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Duty of Care public API: mint a key, run a review live, integrate the guidance-grounded pre-review into your own tools.">
+  <title>Duty of Care · Developers</title>
+  <link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+  <main id="main">
+    <section class="section shell"><p class="eyebrow">Developers</p><h2>Integrate the pre-review. Mint a key, run it live, ship it.</h2>
+      <p class="deck" data-mode="plain">Any writing tool, script-coverage service, or production workflow can call the same review this site uses. There is no account: press the button, get a key, and run a live review from this page. Anonymous calls work too, at lower limits.</p>
+      <p class="deck" data-mode="technical">Keys are stateless HMAC tokens signed with a secret held in Google Secret Manager, so verification is a signature check with no key store. Every response carries <code>data.disclaimer</code> as a required field and <code>meta.gate</code> with the thresholds that were evaluated. Errors use one envelope: <code>{ ok:false, error:{ code, message, fix, docs } }</code>.</p>
+      <div class="steps">
+        <article class="card"><h3>Mint a key</h3><p class="small">Returned once, never stored. Expires after 90 days. Cannot be revoked individually; mint one per integration.</p>
+          <div class="actions"><button class="primary" type="button" data-mint>Get an API key now</button><button type="button" data-copy hidden>Copy</button><span class="small" data-mint-state></span></div>
+          <div class="keybox" data-key hidden></div></article>
+        <article class="card"><h3>Run it live from here</h3><p class="small">Runs the real pipeline with your key: deterministic triggers, Google Agent Search retrieval, the GuidanceContextReviewer on Vertex AI Agent Engine (or in-process ADK, recorded in <code>meta.agent_runtime</code>), and Model Armor on the answer. Nothing is cached.</p>
+          <div class="runrow"><div><label for="run-preset">Preset</label><select id="run-preset"><option value="guidance-case">Loading…</option></select></div><div><label for="run-region">Region</label><select id="run-region"><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="AU">Australia</option></select></div><button class="primary" type="button" data-run>Run POST /v1/review</button></div>
+          <p class="small" data-run-state>Mint a key first, or run anonymously at the standard limit.</p>
+          <p class="small"><strong>Request</strong></p><pre data-curl>curl -X POST "$BASE/v1/review" -H "content-type: application/json" -d '{"preset_id":"guidance-case","region":"US"}'</pre>
+          <p class="small"><strong>Response</strong> <span data-resp-meta></span></p><pre class="json" data-response>—</pre>
+          <div class="actions" data-run-actions hidden><button type="button" data-dl-json>Download JSON</button><a class="btn" data-dl-md href="#">Download Markdown report</a></div></article>
+        <article class="card"><h3>Call it from your code</h3>
+          <p class="small">Python</p><pre>import requests
+
+BASE = "<span data-base></span>"
+key = requests.post(f"{BASE}/v1/keys").json()["data"]["api_key"]
+r = requests.post(
+    f"{BASE}/v1/review",
+    headers={"Authorization": f"Bearer {key}"},
+    json={"screenplay": open("draft.fountain").read(), "region": "US"},
+)
+review = r.json()
+print(review["meta"]["gate"])            # which thresholds passed and failed
+for note in review["data"]["grounded_flags"]:
+    for clause in note["clauses"]:
+        print(note["heading"], clause["publisher"], clause["source_url"])
+print(review["data"]["disclaimer"])      # required field on every response</pre>
+          <p class="small">JavaScript</p><pre>const BASE = "<span data-base></span>";
+const { data: { api_key } } = await (await fetch(`${BASE}/v1/keys`, { method: "POST" })).json();
+const res = await fetch(`${BASE}/v1/review?format=markdown`, {
+  method: "POST",
+  headers: { "content-type": "application/json", "x-api-key": api_key },
+  body: JSON.stringify({ preset_id: "responsible-depiction", region: "US" }),
+});
+console.log(await res.text()); // a Markdown report, disclaimer first</pre></article>
+      </div>
+    </section>
+
+    <section class="section shell"><p class="eyebrow">Reference</p><h2>Endpoints</h2>
+      <div class="tablewrap"><table class="endpoints"><thead><tr><th>Route</th><th>What it does</th><th>Key</th></tr></thead><tbody>
+        <tr><td><code>POST /v1/review</code></td><td>Review a screenplay (<code>screenplay</code> or <code>preset_id</code>, optional <code>region</code>). <code>?format=markdown</code> returns a downloadable report. Returns scenes, trigger candidates, grounded notes with cited clauses, the ADK explanation, writer controls, resources, disclaimer, and <code>meta.gate</code>.</td><td>Optional · 6/min anonymous, 30/min keyed</td></tr>
+        <tr><td><code>POST /v1/review/stream</code></td><td>The same review as newline-delimited JSON progress events (parsed, retrieving, retrieved, explaining, explained, complete) ending with <code>result</code> or <code>error</code>. This is what the workbench uses.</td><td>Same as review</td></tr>
+        <tr><td><code>POST /v1/report</code></td><td>Render a Markdown report from a review payload you already hold. No model call.</td><td>No</td></tr>
+        <tr><td><code>GET /v1/presets</code>, <code>/v1/presets/{id}</code>, <code>/v1/presets/{id}/download</code></td><td>The demo library and downloads in fountain, txt, or json.</td><td>No</td></tr>
+        <tr><td><code>GET /v1/guidance</code></td><td>The approved corpus with provenance and <code>corpus_version</code>.</td><td>No</td></tr>
+        <tr><td><code>GET /v1/resources?region=</code></td><td>Region-aware support resources.</td><td>No</td></tr>
+        <tr><td><code>GET /v1/eval/latest</code></td><td>The deterministic-layer benchmark, computed live from the shipped 48 cases, with failures listed.</td><td>No</td></tr>
+        <tr><td><code>POST /v1/keys</code>, <code>GET /v1/keys/self</code></td><td>Mint a key; inspect the identity and limits of the key you send.</td><td>—</td></tr>
+        <tr><td><code>GET /v1/stack</code>, <code>/health</code>, <code>/health/integrations</code></td><td>Which Google Cloud and Replit services are answering right now, with evidence.</td><td>No</td></tr>
+        <tr><td><code>POST /v1/exports</code>, <code>GET /v1/exports/{id}</code></td><td>Store a review result only when asked. Replit App Storage on Replit; a temporary file elsewhere.</td><td>Optional</td></tr>
+        <tr><td><code>GET/POST/DELETE /v1/decisions</code>, <code>GET /v1/me</code></td><td>Saved writer decisions for a signed-in Replit Auth user. Never stores screenplay text.</td><td>Replit Auth</td></tr>
+      </tbody></table></div>
+      <p class="small">Full OpenAPI: <a href="/docs">/docs</a> · <a href="/openapi.json">/openapi.json</a>. Limits are per minute per caller. Anonymous callers keep working when keys are unavailable. Retention: nothing is stored by default; exports and decisions are explicit. Logged per review: request id, caller tier, counts, model, latency. Never logged: screenplay text, prompts, generated prose.</p>
+      <div class="grid"><article class="card"><h3>Response envelope</h3><pre>{
+  "ok": true,
+  "data": { "scenes": [...], "grounded_flags": [...], "trigger_candidates": [...],
+            "grounding_status": "available", "writer_controls": [...],
+            "resources": [...], "disclaimer": "...", "decision_owner": "writer",
+            "overall_score": null },
+  "meta": { "request_id": "req_…", "latency_ms": 8420, "verdict": "notes",
+            "caller": { "tier": "keyed", "key_id": "…" },
+            "gate": { "passed": ["deterministic_candidate_present", …], "failed": [] },
+            "model_versions": { "gemini": "gemini-2.5-flash", "google_adk": "2.7.1" },
+            "corpus_version": "…", "abstained_because": null }
+}</pre></article><article class="card"><h3>Error envelope</h3><pre>{
+  "ok": false,
+  "error": { "code": "rate_limited",
+             "message": "review allows 6 requests per minute for this caller.",
+             "fix": "Wait and retry, or POST /v1/keys for a key with 5x this limit.",
+             "docs": "/docs" },
+  "meta": { "request_id": "req_…" }
+}</pre><p class="small">Codes are stable strings: <code>validation_error</code>, <code>invalid_api_key</code>, <code>rate_limited</code>, <code>grounding_failed</code>, <code>agent_review_failed</code>, <code>sign_in_required</code>, <code>api_keys_unavailable</code>. Failures fail closed: no note is ever fabricated from model memory.</p></article></div>
+    </section>
+  </main>
+  <footer class="crisis"><div class="shell"><span class="resource">In the U.S.: call or text 988. In immediate danger, contact local emergency services.</span><span><a href="https://findahelpline.com/">Find a helpline by country</a> · <a href="https://github.com/usv240/duty-of-care">Source</a></span></div></footer>
+  <script src="/static/site.js"></script>
+  <script>
+    const $ = window.$q; let apiKey = null, lastRun = null;
+    const BASE = location.origin;
+    document.querySelectorAll('[data-base]').forEach(s => s.textContent = BASE);
+    function curl() {
+      const preset = $('#run-preset').value, region = $('#run-region').value;
+      const auth = apiKey ? ' \\\n  -H "Authorization: Bearer ' + apiKey + '"' : '';
+      $('[data-curl]').textContent = 'curl -X POST "' + BASE + '/v1/review"' + auth + ' \\\n  -H "content-type: application/json" \\\n  -d \'{"preset_id":"' + preset + '","region":"' + region + '"}\'';
+    }
+    async function init() {
+      try { const p = await careFetch('/v1/presets'); const sel = $('#run-preset'); sel.replaceChildren(); p.data.presets.forEach(x => { const o = el('option', x.title + ' (' + x.id + ')'); o.value = x.id; sel.append(o); }); } catch { /* keep default */ }
+      try { const s = await careFetch('/v1/keys/self'); if (!s.data.keys_available) { $('[data-mint-state]').textContent = 'Keys are not enabled on this host; anonymous calls still work.'; $('[data-mint]').disabled = true; } } catch { /* ignore */ }
+      curl();
+      $('#run-preset').onchange = curl; $('#run-region').onchange = curl;
+    }
+    $('[data-mint]').onclick = async () => {
+      const st = $('[data-mint-state]'); st.textContent = 'Minting…';
+      try {
+        const r = await careFetch('/v1/keys', { method: 'POST' }); apiKey = r.data.api_key;
+        const box = $('[data-key]'); box.hidden = false; box.textContent = apiKey;
+        st.textContent = 'Key ' + r.data.key_id + ' · ' + r.data.quota_multiplier + 'x limits · expires in ' + r.data.expires_after_days + ' days. Shown once.';
+        const cp = $('[data-copy]'); cp.hidden = false; cp.onclick = async () => { try { await navigator.clipboard.writeText(apiKey); cp.textContent = 'Copied'; } catch { cp.textContent = 'Select and copy'; } };
+        $('[data-run-state]').textContent = 'Ready: the live run will send Authorization: Bearer ' + r.data.key_id + '…'; curl();
+      } catch (err) { st.textContent = err.message; }
+    };
+    $('[data-run]').onclick = async () => {
+      const btn = $('[data-run]'); btn.disabled = true; const st = $('[data-run-state]'); st.textContent = 'Running the live pipeline…';
+      const out = $('[data-response]'); out.textContent = '…';
+      const headers = { 'content-type': 'application/json' }; if (apiKey) headers['authorization'] = 'Bearer ' + apiKey;
+      const body = { preset_id: $('#run-preset').value, region: $('#run-region').value };
+      const started = performance.now();
+      try {
+        const r = await fetch('/v1/review', { method: 'POST', headers, body: JSON.stringify(body) });
+        const p = await r.json(); const ms = Math.round(performance.now() - started);
+        out.textContent = JSON.stringify(p, null, 2);
+        $('[data-resp-meta]').textContent = 'HTTP ' + r.status + ' · ' + ms + ' ms round trip' + (p.meta ? ' · caller ' + (p.meta.caller ? p.meta.caller.tier : '') + ' · gate passed ' + (p.meta.gate ? p.meta.gate.passed.length : 0) + ', failed ' + (p.meta.gate ? p.meta.gate.failed.length : 0) : '');
+        if (r.ok) {
+          lastRun = p; st.textContent = 'Complete · ' + p.data.grounded_flags.length + ' guidance note(s), ' + p.data.trigger_candidates.length + ' candidate(s). The writer decides.';
+          const acts = $('[data-run-actions]'); acts.hidden = false;
+          $('[data-dl-json]').onclick = () => downloadText('duty-of-care-' + p.meta.request_id + '.json', JSON.stringify(p, null, 2), 'application/json');
+          $('[data-dl-md]').onclick = async e => { e.preventDefault(); const rr = await fetch('/v1/report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title: body.preset_id, review: p.data, meta: p.meta }) }); downloadText('duty-of-care-' + p.meta.request_id + '.md', await rr.text(), 'text/markdown'); };
+        } else st.textContent = (p.error && (p.error.message + ' ' + (p.error.fix || ''))) || ('HTTP ' + r.status);
+      } catch (err) { st.textContent = err.message; out.textContent = err.message; } finally { btn.disabled = false; }
+    };
+    document.addEventListener('shell:ready', init);
+  </script>
+</body>
+</html>

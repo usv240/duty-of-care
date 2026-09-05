@@ -33,7 +33,7 @@ def result(clause_id: str, region: str, classes: list[str]):
 def test_search_results_are_filtered_by_jurisdiction_and_trigger(monkeypatch):
     def fake_search(query, page_size):
         assert "method_specificity" in query
-        assert page_size == 10
+        assert page_size == grounding.SEARCH_WINDOW
         return [
             result("global", "GLOBAL", ["method_specificity"]),
             result("us", "US", ["method_specificity"]),

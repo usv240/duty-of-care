@@ -1,19 +1,29 @@
 # Submission status
 
-Last verified: 2026-08-20 EDT
+Last verified: 2026-09-04 (see `docs/AUDIT-2026-09-04.md` and `docs/LIVE-ACCEPTANCE.json`)
 
 | Gate | State | Evidence / next action |
 |---|---|---|
 | Public standalone repository | Pass | `github.com/usv240/duty-of-care` |
-| Apache-2.0 | Pass | Root `LICENSE` |
-| Google-only AI dependency policy | Pass | Gemini on Vertex AI, Google ADK, Google Agent Search |
-| Live Google runtime | Pass | Cloud Run revision `duty-of-care-agent-backend-00014-fds`; `docs/LIVE-ACCEPTANCE.json` |
-| Deterministic gate + citations + human decision | Pass | Live positive and no-flag acceptance cases |
-| Offline automated suite | Pass | Cloud Build `9255273e-d236-4856-9673-5bd111693419`: Ruff clean, 24 tests passed |
-| Replit Agent used materially | **Pending external action** | Follow `replit.md`; preserve transcript and commit evidence |
+| Apache-2.0 | Pass | Root `LICENSE`, `NOTICE`, `ASSET_RIGHTS.md` |
+| Google-only AI dependency policy | Pass | Gemini on Vertex AI through Google ADK, Google Agent Search; no other AI dependency |
+| Live Google runtime | Pass | Cloud Run `duty-of-care-agent-backend` revision `00020-2wj`, one warm instance; probes in `docs/LIVE-ACCEPTANCE.json` |
+| Managed agent on Vertex AI Agent Engine | Pass | `duty-of-care-guidance-reviewer`; `meta.agent_runtime` on live reviews; `/stack` |
+| Model Armor on agent output | Pass | template `duty-of-care-agent-output`; `model_armor_clear` in `meta.gate` |
+| Corpus across five jurisdictions | Pass | 36 clauses (WHO, Samaritans, National Action Alliance, Mindframe, Mindset); `/v1/guidance` |
+| Live-pipeline evaluation published | Pass | `docs/EVAL-LIVE.json`: 30/30 candidate scenes grounded, 0 clauses outside jurisdiction, 63/63 notes structured, 0 withheld, p50 9.5 s; served in `/v1/eval/latest` |
+| Streaming progress on the workbench | Pass | `POST /v1/review/stream` |
+| Deterministic gate + citations + human decision | Pass | Live guidance case: three grounded notes including the document-level signpost note; responsible depiction: zero candidates |
+| Demo presets viewable and downloadable | Pass | `/presets`, `/v1/presets/{id}/download` (fountain, txt, json) |
+| Bring-your-own draft | Pass | Browser-side Fountain/text/Markdown/FDX import; nothing stored |
+| Public API with one-click keys and live run | Pass | `/developers`, `POST /v1/keys`, `meta.gate`, Markdown report; signing secret in Secret Manager |
+| Sponsor stack visible on every page | Pass | Ribbon on all pages, `/stack`, `/v1/stack` with earned statuses |
+| Offline automated suite | Pass | 53 tests, Ruff clean, Playwright page check at two widths (2026-09-04, local; CI runs the same) |
+| Replit Agent used materially | **Pending external action** | Follow `replit.md`; `/stack` stays `pending` until evidence variables are set |
 | Public Replit deployment | **Pending external action** | Must verify signed-out `replit.app`/`replit.dev` URL |
-| Qualified independent ten-fragment review | **Pending external action** | Send `evaluation/` pack; preserve credentials, consent, labels, and limitations |
-| Public demo video, at most 3 minutes | **Pending external action** | Record only after Replit URL and external review evidence exist |
-| Devpost submission | **Pending external action** | Complete form and retain final confirmation before deadline |
+| Replit Auth, Database, App Storage, Scheduled Deployment live | **Pending external action** | Adapters shipped with local fallbacks; verify on Replit via `/v1/me`, `/v1/decisions`, `/v1/exports`, `/stack` |
+| Qualified independent ten-fragment review | **Pending external action** | Send `evaluation/` pack; `/v1/eval/latest` reports it as pending |
+| Public demo video, at most 3 minutes | **Pending external action** | Record only after Replit URL and evidence exist |
+| Devpost submission | **Pending external action** | Complete form before 2026-09-09 14:00 PT |
 
-The Cloud Run URL is a functional fallback and proof of the Google agent runtime. It does not satisfy the Replit hosting requirement by itself.
+The Cloud Run URL is the Google agent backend and a functional fallback. It does not satisfy the Replit hosting requirement by itself.

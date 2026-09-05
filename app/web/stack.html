@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-reading="plain">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Every Google Cloud and Replit service Duty of Care is built on, what each one does, and whether it is answering right now.">
+  <title>Duty of Care · Stack</title>
+  <link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+  <main id="main">
+    <section class="section shell"><p class="eyebrow">Stack</p><h2>Every sponsor tool, what it does here, and whether it is answering now.</h2>
+      <p class="deck" data-mode="plain">A green dot on this page means a real round trip just happened or the service is provably part of the process serving you. Grey means wired but not exercised. Amber means the track requires it and only the project owner can complete it. Nothing here is painted green for decoration.</p>
+      <p class="deck" data-mode="technical">Served from <code>GET /v1/stack</code>, which folds the one-minute-cached health probes (Vertex generate_content, Discovery Engine search) into a component list. Replit services report their real backend: Postgres or key-value on Replit, a labelled local fallback elsewhere. Replit Agent flips to active only when the owner sets the evidence variables after a genuine Agent session.</p>
+      <div class="flow">
+        <div class="step r"><b>Replit</b>Autoscale deployment serves the writer-facing site on replit.app; Auth, Database, App Storage, and a Scheduled re-check back it.</div>
+        <div class="step"><b>Layer 1 · code</b>Deterministic triggers parse scenes and select candidates with exact offsets.</div>
+        <div class="step g"><b>Google Agent Search</b>Retrieves versioned, source-linked clauses; code filters by jurisdiction and trigger class.</div>
+        <div class="step g"><b>ADK on Agent Engine + Gemini</b>Explains only the retrieved clauses and self-checks its alternative through the hard filter; Model Armor screens the answer.</div>
+        <div class="step"><b>Layer 3 · writer</b>Accept, dismiss, or escalate. Decisions saved on Replit. No score.</div>
+      </div>
+      <div class="actions"><span class="small" data-summary>Loading…</span><button type="button" data-refresh>Re-run live probes</button></div>
+      <div class="stackgroups" data-groups></div>
+      <div class="legend" data-legend></div>
+    </section>
+    <section class="section shell"><p class="eyebrow">Track requirements</p><h2>What the Replit track checks, and where this project stands.</h2>
+      <div class="grid"><article class="card"><h3>Built with Replit Agent</h3><p>Mandatory. The owner runs the prompt in <code>replit.md</code> in an authenticated workspace; Agent's transcript and commit become the evidence. The Replit Agent card above stays amber until that record exists, on purpose.</p></article><article class="card"><h3>Deployed on replit.app</h3><p>Mandatory. <code>.replit</code> declares an Autoscale deployment of this same app. Until the public URL exists, the Cloud Run URL is the Google agent backend and a functional fallback, never a substitute for the requirement.</p></article><article class="card"><h3>Google Cloud at runtime</h3><p>Gemini on Vertex AI through Google ADK, the same agent on Vertex AI Agent Engine, Google Agent Search for retrieval, Model Armor on the agent's answer, Cloud Run for hosting, Secret Manager for the signing secret, Cloud Build for CI, Cloud Logging for content-free traces. All imported and called in code, not named in a README.</p></article><article class="card"><h3>Only Google AI</h3><p>No other model, agent framework, or AI API is used at runtime. The deterministic layer is plain code; the safety filter is a regular expression, not a model.</p></article></div>
+    </section>
+  </main>
+  <footer class="crisis"><div class="shell"><span class="resource">In the U.S.: call or text 988. In immediate danger, contact local emergency services.</span><span><a href="https://findahelpline.com/">Find a helpline by country</a> · <a href="https://github.com/usv240/duty-of-care">Source</a></span></div></footer>
+  <script src="/static/site.js"></script>
+  <script>
+    const $ = window.$q;
+    const GROUPS = [['google', 'Google Cloud', 'Gemini and Agent Builder services that run the agent'], ['partner', 'Replit', 'Partner platform: build with Agent, deploy, sign in, store, schedule'], ['app', 'Application', 'The plain code around them']];
+    function render(data) {
+      const groups = $('[data-groups]'); groups.replaceChildren();
+      GROUPS.forEach(([key, label, sub]) => {
+        const items = data.components.filter(c => c.group === key); if (!items.length) return;
+        const g = el('section', undefined, 'stackgroup ' + key);
+        const h = el('h3'); h.append(el('b', label), document.createTextNode(sub)); g.append(h);
+        const grid = el('div', undefined, 'stackgrid');
+        items.forEach(c => {
+          const card = el('article', undefined, 'comp'); card.id = c.key;
+          const top = el('div', undefined, 'top'); top.append(el('h4', c.name));
+          const pill = el('span', undefined, 'status-pill'); pill.append(el('span', undefined, 'dot ' + c.status), document.createTextNode(c.status)); top.append(pill);
+          card.append(top, el('p', c.role, 'role'), el('p', c.how, 'how'));
+          const meta = el('div', undefined, 'meta');
+          if (c.version) meta.append(el('span', 'v' + c.version));
+          if (c.evidence) meta.append(el('span', 'evidence: ' + c.evidence));
+          if (c.reference) { const a = el('a', c.reference); a.href = 'https://github.com/usv240/duty-of-care/blob/main/' + c.reference; a.target = '_blank'; a.rel = 'noreferrer'; meta.append(a); }
+          if (c.link) { const a = el('a', 'evidence ↗'); a.href = c.link; a.target = '_blank'; a.rel = 'noreferrer'; meta.append(a); }
+          card.append(meta); grid.append(card);
+        });
+        g.append(grid); groups.append(g);
+      });
+      const s = data.summary; $('[data-summary]').textContent = 'Surface: ' + data.surface + ' · ' + s.live + ' live · ' + s.active + ' active · ' + s.configured + ' configured · ' + s.applied + ' applied · ' + s.pending + ' pending · ' + s.unreachable + ' unreachable · probes ' + (data.timing ? data.timing.query_ms : '?') + ' ms';
+      const legend = $('[data-legend]'); legend.replaceChildren();
+      Object.entries(data.legend).forEach(([k, v]) => { const sp = el('span'); sp.append(el('span', undefined, 'dot ' + k), document.createTextNode(k + ': ' + v)); legend.append(sp); });
+      if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) { t.scrollIntoView({ block: 'center' }); t.classList.add('flash'); } }
+    }
+    async function init() {
+      const data = await loadStack(); if (data) render(data); else $('[data-summary]').textContent = 'Stack endpoint unavailable.';
+      $('[data-refresh]').onclick = async () => { $('[data-summary]').textContent = 'Probing…'; try { const r = await careFetch('/v1/stack'); render(r.data); } catch (err) { $('[data-summary]').textContent = err.message; } };
+    }
+    document.addEventListener('shell:ready', init);
+  </script>
+</body>
+</html>

@@ -1,51 +1,131 @@
 {
-  "verified_at": "2026-08-20T19:36:00-04:00",
+  "verified_at": "2026-09-04",
   "service": "duty-of-care-agent-backend",
-  "revision": "duty-of-care-agent-backend-00014-fds",
+  "revision": "duty-of-care-agent-backend-00020-2wj (evidence gathered on 00017 through 00020)",
   "url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
+  "agent_engine": "projects/109051079423/locations/us-central1/reasoningEngines/7146145532602220544 (duty-of-care-guidance-reviewer)",
+  "model_armor_template": "duty-of-care-agent-output",
+  "corpus_version": "4e88d2665398a9b8",
+  "corpus_clauses": 36,
   "health": {
     "google_vertex": true,
     "agent_search": true,
     "google_adk": true,
+    "api_keys": true,
     "replit": false,
     "agent_runtime_ready": true,
     "product_surface": "cloud_run_fallback"
   },
+  "stack_statuses": {
+    "gemini": "live",
+    "adk": "active",
+    "agent_engine": "live",
+    "model_armor": "live",
+    "agent_search": "live",
+    "cloudrun": "active",
+    "secret_manager": "active",
+    "cloud_build": "applied",
+    "cloud_logging": "active",
+    "replit_agent": "pending",
+    "replit_deployment": "pending",
+    "replit_auth": "configured",
+    "replit_database": "configured",
+    "replit_app_storage": "configured",
+    "replit_scheduled": "configured",
+    "replit_secrets": "configured"
+  },
+  "pages": [
+    "/",
+    "/presets",
+    "/developers",
+    "/stack"
+  ],
   "flagged_case": {
-    "provenance": "self-authored CC0 demonstration scene",
-    "grounded_flag_count": 1,
-    "deterministic_trigger_classes": [
-      "method_specificity",
-      "framing_as_solution",
-      "absence_of_help_seeking"
+    "preset": "guidance-case",
+    "caller_tier": "keyed",
+    "latency_seconds_round_trip": 29.6,
+    "grounded_flag_count": 3,
+    "document_level_flag": true,
+    "agent_runtime": "vertex_ai_agent_engine",
+    "self_check_calls_per_flag": 1,
+    "safety_filter": "passed on all three notes",
+    "model_armor": "screened, no match, on all three notes",
+    "jurisdictions_per_note": [
+      "US",
+      "GLOBAL"
     ],
-    "retrieved_clause_count": 6,
-    "publishers": [
-      "National Action Alliance for Suicide Prevention",
-      "World Health Organization"
+    "divergence_reported": true,
+    "gate_passed": [
+      "deterministic_candidate_present",
+      "applicable_clause_retrieved",
+      "agent_explanation_completed",
+      "safety_filter_passed",
+      "model_armor_clear",
+      "grounding_available"
     ],
-    "agent": "GuidanceContextReviewer",
-    "model": "gemini-2.5-flash",
-    "agent_status": "completed",
-    "decision_source": "deterministic_trigger_plus_agent_search_clause",
-    "safety_filter": "passed",
-    "requires_human": true,
+    "gate_failed": [
+      "resource_signpost_present"
+    ],
     "decision_owner": "writer",
     "overall_score": null
   },
+  "australia_case": {
+    "preset": "uk-drama",
+    "region": "AU",
+    "latency_seconds_round_trip": 16.6,
+    "clauses": [
+      "mindframe-consequences-au",
+      "mindframe-solution-au",
+      "who-hope-help-2019",
+      "mindframe-lived-experience-au",
+      "who-help-seeking-2019",
+      "mindframe-support-au"
+    ],
+    "clauses_outside_jurisdiction": 0
+  },
   "responsible_depiction_case": {
-    "provenance": "self-authored CC0 demonstration scene",
-    "deterministic_trigger_count": 0,
-    "grounded_flag_count": 0,
-    "grounding_status": "available",
-    "decision_owner": "writer",
-    "overall_score": null
+    "preset": "responsible-depiction",
+    "verdict": "no_candidates",
+    "grounded_flag_count": 0
+  },
+  "streaming": {
+    "route": "/v1/review/stream",
+    "events_seconds": {
+      "parsed": 0.1,
+      "retrieving": 0.1,
+      "retrieved": 0.5,
+      "explaining": 0.5,
+      "explained": 7.4,
+      "complete": 7.4
+    }
+  },
+  "offline_suite": {
+    "tests": 53,
+    "ruff": "clean",
+    "visual_check": "passed, 4 pages x 2 widths"
+  },
+  "live_pipeline_evaluation": {
+    "file": "docs/EVAL-LIVE.json",
+    "cases": 54,
+    "errors": 0,
+    "candidate_scenes_grounded": "30/30",
+    "expected_cases_fully_grounded": "27/27",
+    "control_cases_clean": "26/26",
+    "clauses_outside_jurisdiction": 0,
+    "notes_structured": "63/63",
+    "filter_rejections": 0,
+    "model_armor_withheld": 0,
+    "p50_ms": 9467,
+    "p95_ms": 20275,
+    "fallback_to_in_process": "10 of 34 model-backed cases, recorded per note"
   },
   "claims_not_yet_verified": [
     "Replit Agent material build evidence",
     "public Replit deployment",
+    "Replit Auth, Database, App Storage, and Scheduled Deployment live on Replit",
     "qualified independent ten-fragment review",
     "public demo video",
     "Devpost submission"
-  ]
+  ],
+  "agent_engine_scaling": "min 1, max 4 instances, container concurrency 4"
 }

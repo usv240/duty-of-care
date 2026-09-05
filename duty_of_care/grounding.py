@@ -68,8 +68,17 @@ def _search(query: str, page_size: int) -> list[dict[str, Any]]:
     return list(response.json().get("results", []))
 
 
+SEARCH_WINDOW = 50
+MAX_CLAUSES_PER_NOTE = 6
+
+
 def retrieve_clauses(scene: Scene, triggers: list[Trigger], region: str) -> list[GuidanceClause]:
-    """Retrieve candidates from Agent Search, then enforce applicability in code."""
+    """Retrieve candidates from Agent Search, then enforce applicability in code.
+
+    The window covers the whole corpus so applicability filtering in code can
+    never be starved by ranking; the top applicable clauses, in Agent Search's
+    relevance order, are kept for the note.
+    """
 
     trigger_classes = sorted({item.trigger_class for item in triggers})
     if not trigger_classes:
@@ -78,8 +87,24 @@ def retrieve_clauses(scene: Scene, triggers: list[Trigger], region: str) -> list
         f"screen depiction guidance for {', '.join(trigger_classes)}; "
         f"jurisdiction {region.upper()}; scene context {scene.text[:1200]}"
     )
-    response = _search(query, 10)
+    response = _search(query, SEARCH_WINDOW)
     allowed_regions = {"GLOBAL", region.upper()}
+    clauses = _applicable(response, trigger_classes, allowed_regions)
+    if not clauses:
+        # Semantic ranking on a long scene can leave applicable records outside the
+        # window. A second, class-only query keeps retrieval as the sole source of
+        # clauses while giving the ranker the terms the corpus is indexed on.
+        response = _search(
+            f"screen depiction guidance for {', '.join(trigger_classes)}; jurisdiction {region.upper()}",
+            SEARCH_WINDOW,
+        )
+        clauses = _applicable(response, trigger_classes, allowed_regions)
+    return clauses
+
+
+def _applicable(
+    response: list[dict[str, Any]], trigger_classes: list[str], allowed_regions: set[str]
+) -> list[GuidanceClause]:
     clauses: list[GuidanceClause] = []
     seen: set[str] = set()
     for result in response:
@@ -107,6 +132,8 @@ def retrieve_clauses(scene: Scene, triggers: list[Trigger], region: str) -> list
                 retrieved_at=str(data.get("retrieved_at", "")),
             )
         )
+        if len(clauses) >= MAX_CLAUSES_PER_NOTE:
+            break
     return clauses
 
 

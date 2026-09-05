@@ -1,0 +1,62 @@
+[
+  {
+    "id": "guidance-case",
+    "file": "guidance-case.fountain",
+    "title": "The Last Message",
+    "logline": "A three-scene draft in which a character frames the act as the only way out and describes an exact amount, with nobody stepping in.",
+    "region": "US",
+    "expectation": "Code should select scene 2 and scene 3 as candidates. Agent Search should retrieve WHO and National Action Alliance clauses, and the ADK reviewer should explain them and offer one alternative. The writer decides.",
+    "expected_trigger_classes": ["method_specificity", "framing_as_solution", "absence_of_help_seeking", "repetition", "signposting_absence"],
+    "expect_flag": true
+  },
+  {
+    "id": "responsible-depiction",
+    "file": "responsible-depiction.fountain",
+    "title": "Through This Minute",
+    "logline": "The same subject, written the way the published guidance describes: a character names her thoughts, a friend stays, and the resource card is on screen.",
+    "region": "US",
+    "expectation": "The subject alone is not the test. No deterministic candidate should survive, so no clause is retrieved and no flag is raised. The tool must still say this is not certification.",
+    "expected_trigger_classes": [],
+    "expect_flag": false
+  },
+  {
+    "id": "short-film-draft",
+    "file": "short-film-draft.fountain",
+    "title": "Tribute",
+    "logline": "A six-scene short. Two scenes repeat the same act, one memorialises it, one shows a parent noticing and responding, and the draft has no end card yet.",
+    "region": "US",
+    "expectation": "A mixed result. Some scenes should be candidates for romanticisation and repetition; the scene where the parent listens should not add an absence-of-help candidate. The missing end card should appear as a document-level note.",
+    "expected_trigger_classes": ["romanticisation", "repetition", "absence_of_help_seeking", "signposting_absence"],
+    "expect_flag": true
+  },
+  {
+    "id": "relapse-and-recovery",
+    "file": "relapse-and-recovery.fountain",
+    "title": "Ninety Days",
+    "logline": "An addiction storyline with a relapse, a sponsor, and a meeting. Nothing is glamorised and help is present in every scene.",
+    "region": "US",
+    "expectation": "The subject is addiction rather than suicide. Every scene carries a support signal, so no candidate should be raised even though the word relapse appears repeatedly.",
+    "expected_trigger_classes": [],
+    "expect_flag": false
+  },
+  {
+    "id": "uk-drama",
+    "file": "uk-drama.fountain",
+    "title": "Low Tide",
+    "logline": "A UK-set drama where a character calls the act a beautiful sacrifice. The draft signposts Samaritans, so the document-level note should not fire.",
+    "region": "GB",
+    "expectation": "Run with the United Kingdom region. Retrieved clauses should include Samaritans (GB) alongside global WHO guidance, never US-only clauses. Jurisdictions stay separate.",
+    "expected_trigger_classes": ["romanticisation", "absence_of_help_seeking"],
+    "expect_flag": true
+  },
+  {
+    "id": "documentary-edit",
+    "file": "documentary-edit.fountain",
+    "title": "Cut Twelve",
+    "logline": "A documentary editor argues about including a survivor's account. The account emphasises complexity and help-seeking, but the cut has no resource card.",
+    "region": "US",
+    "expectation": "No scene-level candidate should survive because help-seeking is present. The only note should be document-level: no support resource anywhere in the cut.",
+    "expected_trigger_classes": ["signposting_absence"],
+    "expect_flag": true
+  }
+]

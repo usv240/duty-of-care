@@ -40,14 +40,20 @@ def main() -> None:
         (Path(__file__).resolve().parents[1] / "guidance" / "corpus.json").read_text("utf-8")
     )
     for record in corpus:
-        document = discoveryengine.Document(id=record["clause_id"], struct_data=record)
+        document = discoveryengine.Document(
+            id=record["clause_id"],
+            name=f"{branch}/documents/{record['clause_id']}",
+            struct_data=record,
+        )
         try:
             documents.create_document(
                 parent=branch, document=document, document_id=record["clause_id"]
             )
             print(f"created {record['clause_id']}")
         except AlreadyExists:
-            documents.update_document(document=document, allow_missing=False)
+            documents.update_document(
+                request=discoveryengine.UpdateDocumentRequest(document=document, allow_missing=True)
+            )
             print(f"updated {record['clause_id']}")
 
 

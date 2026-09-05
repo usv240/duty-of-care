@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-reading="plain">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Self-authored demonstration screenplays for Duty of Care: read them, download them, run them.">
+  <title>Duty of Care · Demo library</title>
+  <link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+  <main id="main">
+    <section class="section shell"><p class="eyebrow">Demo library</p><h2>Six self-authored drafts. Read them, download them, run them.</h2>
+      <p class="deck" data-mode="plain">Every preset is original fiction written for this project and released under CC0, because the contest forbids using anyone else's screenplay. Each one says in advance what the tool should notice, so you can check the result against the expectation instead of taking a demo on trust.</p>
+      <p class="deck" data-mode="technical">Presets are served from <code>GET /v1/presets</code> with an expected trigger-class set per file. Downloads come from <code>GET /v1/presets/{id}/download?format=fountain|txt|json</code>. Running a preset performs a live review through Agent Search and the ADK reviewer; nothing is pre-computed.</p>
+      <div class="library" data-library><div class="card empty">Loading presets…</div></div>
+    </section>
+    <section class="section shell"><p class="eyebrow">Bring your own</p><h2>Your draft never leaves your browser until you press Review.</h2><div class="grid"><article class="card"><h3>Formats</h3><p>Paste plain text or Fountain, or upload a Final Draft <code>.fdx</code>; it is converted to text in the browser. Scene headings beginning <code>INT.</code>, <code>EXT.</code>, or <code>I/E.</code> become the units of review.</p><p><a class="btn" href="/#review">Open the review workbench →</a></p></article><article class="card"><h3>What you get back</h3><p>An annotated page with each triggering phrase underlined, the exact clause and source link for every note, one alternative from the Google ADK reviewer, and downloads in JSON or Markdown. Nothing is stored unless you press Export.</p></article></div></section>
+  </main>
+  <footer class="crisis"><div class="shell"><span class="resource">In the U.S.: call or text 988. In immediate danger, contact local emergency services.</span><span><a href="https://findahelpline.com/">Find a helpline by country</a> · <a href="https://github.com/usv240/duty-of-care">Source</a></span></div></footer>
+  <script src="/static/site.js"></script>
+  <script>
+    const $ = window.$q;
+    function chip(text, klass) { const c = el('span', text, 'chip' + (klass ? ' tc-' + klass : '')); return c; }
+    async function init() {
+      const host = $('[data-library]');
+      try {
+        const p = await careFetch('/v1/presets'); host.replaceChildren();
+        p.data.presets.forEach(preset => {
+          const card = el('article', undefined, 'card preset'); card.id = preset.id;
+          const head = el('div', undefined, 'actions');
+          head.append(el('span', preset.expect_flag ? 'expects guidance notes' : 'expects no note', 'badge ' + (preset.expect_flag ? 'flag' : 'clear')), el('span', preset.region, 'badge'), el('span', preset.scene_count + (preset.scene_count === 1 ? ' scene' : ' scenes'), 'badge'));
+          card.append(head, el('h3', preset.title), el('p', preset.logline));
+          const chips = el('div', undefined, 'chips'); chips.style.padding = '0';
+          if (preset.expected_trigger_classes.length) preset.expected_trigger_classes.forEach(k => chips.append(chip(CLASS_LABEL[k] || k, k)));
+          else chips.append(chip('no candidate expected'));
+          card.append(chips, el('p', 'Expectation: ' + preset.expectation, 'expect'));
+          const bar = el('div', undefined, 'bar');
+          const view = el('button', 'Read'); view.type = 'button';
+          const viewer = el('div', undefined, 'viewer'); viewer.hidden = true;
+          view.onclick = async () => {
+            if (!viewer.hidden) { viewer.hidden = true; view.textContent = 'Read'; return; }
+            if (!viewer.childElementCount) { const full = await careFetch('/v1/presets/' + preset.id); const scenes = full.data.text.split(/\n(?=(?:INT\.|EXT\.|I\/E\.))/).map((chunk, i) => { const nl = chunk.indexOf('\n'); return { scene_id: 's' + i, heading: nl > 0 ? chunk.slice(0, nl) : chunk, text: nl > 0 ? chunk.slice(nl + 1).trim() : '' }; }); viewer.append(screenplayPage(scenes, [])); }
+            viewer.hidden = false; view.textContent = 'Hide';
+          };
+          const run = el('a', 'Run this preset', 'btn'); run.href = '/?preset=' + preset.id + '&run=1';
+          bar.append(view, run, el('span', 'Download:', 'small'));
+          Object.entries(preset.downloads).forEach(([fmt, url]) => { const a = el('a', '.' + fmt, 'btn'); a.href = url; bar.append(a); });
+          card.append(bar, viewer);
+          host.append(card);
+        });
+        if (location.hash) { const target = document.getElementById(location.hash.slice(1)); if (target) target.scrollIntoView(); }
+      } catch (err) { host.replaceChildren(el('div', 'Presets unavailable: ' + err.message, 'card danger-note')); }
+    }
+    document.addEventListener('shell:ready', init);
+  </script>
+</body>
+</html>
