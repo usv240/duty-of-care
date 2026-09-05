@@ -4,7 +4,7 @@
 # reports the Replit services that are actually backing the process.
 entrypoint = "duty_of_care/main.py"
 run = "uvicorn duty_of_care.main:app --host 0.0.0.0 --port 8080"
-modules = ["python-3.12"]
+modules = ["python-3.11", "web", "nodejs-20"]
 
 [deployment]
 # Autoscale: the product must stay live through judging on a replit.app domain.
@@ -14,6 +14,9 @@ run = ["sh", "-c", "uvicorn duty_of_care.main:app --host 0.0.0.0 --port ${PORT:-
 [[ports]]
 localPort = 8080
 externalPort = 80
+
+[nix]
+channel = "stable-25_05"
 
 # Scheduled Deployment (configured in the Replit UI, nightly):
 #   python -m scripts.scheduled_recheck
