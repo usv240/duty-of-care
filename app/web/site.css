@@ -119,6 +119,7 @@ html[data-theme="dark"] .sigil{color:#071512}
 .progress{margin:.6rem 0 0;padding-left:1.1rem;font-size:.8rem;color:var(--muted);display:grid;gap:.25rem}.progress li.done{color:var(--ink)}.progress li.busy::after{content:' …';color:var(--teal)}
 .jurisdictions{margin:1rem 1.2rem 0;font-size:.82rem;color:var(--muted);border:1px dashed var(--line);border-radius:10px;padding:.7rem .9rem}.jurisdictions strong{color:var(--ink)}
 .fineprint details{padding:1rem 1.4rem}.fineprint summary{cursor:pointer;font-weight:700}.fineprint p{margin:.6rem 0 0;font-size:.92rem;color:var(--muted)}
+.evidence{margin:1rem 1.2rem 0;border-top:1px dashed var(--line);padding-top:.9rem}.evrow{font-size:.84rem;margin-bottom:.7rem}.evrow p{margin:.25rem 0 0}.evrow strong{font-size:.86rem}
 /* live panel */
 .live{position:fixed;right:1rem;top:112px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;width:min(360px,calc(100% - 2rem));box-shadow:var(--shadow);z-index:8}
 .live[hidden]{display:none}.live p{margin:.3rem 0;font-size:.88rem}

@@ -64,9 +64,12 @@ def build_stack(
     model: str,
     agent_engine: Mapping[str, Any] | None = None,
     model_armor: Mapping[str, Any] | None = None,
+    evidence_store: bool = False,
+    agent_quality: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     agent_engine = agent_engine or {}
     model_armor = model_armor or {}
+    quality = agent_quality if agent_quality and agent_quality.get("notes_evaluated") else None
     vertex = bool(integrations.get("google_vertex", {}).get("ok"))
     search = bool(integrations.get("agent_search", {}).get("ok"))
     revision = os.getenv("K_REVISION")
@@ -157,13 +160,56 @@ def build_stack(
             "Google Agent Search (Discovery Engine data store)",
             "google",
             "The only source of guidance text. No clause, no flag.",
-            "An approved corpus of eight attributed guidance records is a structured "
-            "Discovery Engine data store. Each candidate scene is searched with its trigger "
-            "classes and jurisdiction; results are then filtered in code by jurisdiction and "
-            "trigger class so retrieval cannot smuggle an inapplicable clause into a note.",
+            "Two structured Discovery Engine data stores. The guidance store holds 36 attributed "
+            "clauses across five jurisdictions; each candidate scene is searched with its trigger "
+            "classes and jurisdiction, then filtered in code so retrieval cannot smuggle an "
+            "inapplicable clause into a note. The evidence store holds 14 research records "
+            "verified against Europe PMC, retrieved per note so the writer sees why the guidance "
+            "says what it says, including the studies that disagree.",
             "live" if search else "unreachable",
             evidence=f"live search returned document {search_doc}" if search_doc else None,
             reference="duty_of_care/grounding.py",
+        ),
+        _entry(
+            "vertex_evaluation",
+            "Vertex AI Gen AI Evaluation Service",
+            "google",
+            "An independent Google judge of the agent's answers.",
+            "After the project's own filters and Model Armor have run, the evaluation service "
+            "scores each note for groundedness (is every claim attributable to the clauses Agent "
+            "Search returned?) and safety. The scores are published from /v1/eval/latest, so the "
+            "number on the site is the number that ran.",
+            "applied" if quality else "pending",
+            evidence=(
+                f"{quality['notes_evaluated']} notes judged on {str(quality.get('ran_at'))[:10]}: "
+                f"mean groundedness {quality.get('groundedness', {}).get('mean')}, "
+                f"mean safety {quality.get('safety', {}).get('mean')}"
+                if quality else "run scripts/groundedness_eval.py against a deployment"
+            ),
+            reference="scripts/groundedness_eval.py",
+        ),
+        _entry(
+            "cloud_monitoring",
+            "Cloud Monitoring",
+            "google",
+            "Watches the public backend so a judge never finds it down first.",
+            "An uptime check requests the presets endpoint from Google's probers every five "
+            "minutes and asserts the response body names the guidance-case preset, which "
+            "proves the app, not just the load balancer, answered.",
+            "active",
+            evidence="uptime check duty-of-care-health, 300 s period, content match",
+            reference="docs/AUDIT-2026-09-04.md",
+        ),
+        _entry(
+            "artifact_registry",
+            "Artifact Registry",
+            "google",
+            "Holds the container images Cloud Build produces.",
+            "Every Cloud Run deploy builds the image from source with Cloud Build and stores it "
+            "in Artifact Registry; the serving revision is pinned to one immutable image.",
+            "active" if on_cloud_run else "configured",
+            evidence=f"revision {revision} runs an Artifact Registry image" if revision else None,
+            reference="infra/deploy_cloud_run.ps1",
         ),
         _entry(
             "cloudrun",

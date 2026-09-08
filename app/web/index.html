@@ -36,8 +36,8 @@
 
 
     <section class="section shell"><p class="eyebrow">The fine print, in full</p><h2>Eight things a careful reader will want to know.</h2><div class="grid fineprint">
-      <details class="card"><summary>The evidence is contested</summary><p>Bridge et al., <em>JAMA Psychiatry</em> 2019 associated one series release with increased US youth suicides. The Annenberg Public Policy Center reanalysis found no clear evidence of contagion after controlling for the underlying rise. We cite both. Overstating contested evidence is how a tool like this loses an informed reader.</p></details>
-      <details class="card"><summary>Where the published guidance comes from</summary><p>WHO, <em>Preventing suicide: a resource for filmmakers and others working on stage and screen</em>; Samaritans' guidance on depictions of suicide and self-harm in drama and film; the 2019 National Recommendations for Depicting Suicide (National Action Alliance, SAMHSA, Entertainment Industries Council); Mindframe's resource for stage and screen (Australia); and the Mindset guide's suicide chapter (Canada). Thirty-six attributed clauses, each with a source link and version.</p></details>
+      <details class="card"><summary>The evidence is contested</summary><p>Bridge et al. (2019, <em>JAACAP</em>) and Niederkrotenthaler et al. (2019, <em>JAMA Psychiatry</em>) associated one series release with increased US youth suicides. Romer's 2020 reanalysis (<em>PLOS ONE</em>, Annenberg Public Policy Center) found no clear evidence of contagion after controlling for the underlying rise. We cite both sides. Overstating contested evidence is how a tool like this loses an informed reader.</p></details>
+      <details class="card"><summary>Where the published guidance comes from</summary><p>WHO, <em>Preventing suicide: a resource for filmmakers and others working on stage and screen</em>; Samaritans' guidance on depictions of suicide and self-harm in drama and film; the 2019 National Recommendations for Depicting Suicide (National Action Alliance, SAMHSA, Entertainment Industries Council); Mindframe's resource for stage and screen (Australia); and the Mindset guide's suicide chapter (Canada). Thirty-six attributed clauses, each with a source link and version. The research behind them, fourteen verified studies including the ones that disagree, is on the <a href="/evidence">Evidence page</a> and is retrieved beside every note.</p></details>
       <details class="card"><summary>We are not replacing anyone</summary><p>Samaritans' Media Advice team runs a script review service, staffed by people, with finite capacity. This exists to reach writers that service will never have capacity to serve, and it routes users toward expert review where one is warranted.</p></details>
       <details class="card"><summary>This is not certification</summary><p>We never display "your scene is safe." A pre-review can only report what it detected against a corpus. It is not clinical or professional judgement and cannot substitute for it.</p></details>
       <details class="card"><summary>The Papageno effect</summary><p>Depicting help-seeking, coping and recovery is associated in the literature with protective rather than harmful effects. The tool explains the mechanism rather than issuing a verdict, so a writer learns instead of complying.</p></details>
@@ -178,6 +178,19 @@
           body.append(meta2); row.append(body); srcs.append(row);
         });
         note.append(srcs);
+        if (flag.evidence && flag.evidence.length) {
+          const ev = el('div', undefined, 'evidence');
+          const eh = el('div', undefined, 'srchead'); eh.append(el('span', 'Why the guidance says this · research retrieved by Google Agent Search')); ev.append(eh);
+          flag.evidence.forEach(x => {
+            const row = el('div', undefined, 'evrow');
+            const head = el('div'); head.append(el('strong', x.title)); head.append(el('span', ' · ' + String(x.authors).split(',')[0] + (String(x.authors).includes(',') ? ' et al.' : '') + ' · ' + x.journal + ' ' + x.year + ' · ', 'small'));
+            const a = el('a', 'doi:' + x.doi); a.href = 'https://doi.org/' + x.doi; a.target = '_blank'; a.rel = 'noreferrer'; head.append(a);
+            row.append(head, el('p', x.finding, 'small'), el('p', 'For the writer: ' + x.relevance, 'small'));
+            ev.append(row);
+          });
+          const more = el('a', 'All records and the studies that disagree →'); more.href = '/evidence'; more.className = 'small'; ev.append(more);
+          note.append(ev);
+        }
         if (flag.jurisdictions && Object.keys(flag.jurisdictions).length > 1) {
           const jp = el('div', undefined, 'jurisdictions');
           const names = Object.entries(flag.jurisdictions).map(([j, ids]) => j + ' (' + ids.length + ')').join(' · ');
@@ -245,7 +258,7 @@
           if (ev.event === 'parsed') step(ev.scenes + ' scene(s) parsed · ' + ev.candidates + ' deterministic candidate(s)' + (ev.trigger_classes.length ? ': ' + ev.trigger_classes.map(k => CLASS_LABEL[k] || k).join(', ') : ''), 'done');
           else if (ev.event === 'retrieving') step('Agent Search · retrieving clauses for ' + (ev.scene_id === 'document' ? 'the whole document' : ev.heading), 'busy');
           else if (ev.event === 'retrieved') { const li = prog.lastElementChild; if (li) { li.className = 'done'; li.textContent = 'Agent Search · ' + ev.clause_count + ' clause(s) for ' + (ev.scene_id === 'document' ? 'the whole document' : ev.scene_id) + (ev.publishers.length ? ' from ' + ev.publishers.join(', ') : ''); } }
-          else if (ev.event === 'explaining') step((ev.runtime === 'vertex_ai_agent_engine' ? 'Agent Engine' : 'ADK') + ' · GuidanceContextReviewer explaining ' + ev.scene_id, 'busy');
+          else if (ev.event === 'explaining') step((ev.runtime === 'vertex_ai_agent_engine' ? 'Agent Engine' : 'ADK') + ' · GuidanceContextReviewer explaining ' + ev.scene_id + (ev.evidence ? ' · ' + ev.evidence + ' research record(s) retrieved' : ''), 'busy');
           else if (ev.event === 'explained') step('Explained ' + ev.scene_id + ' · filter ' + ev.safety_filter + ' · self-checks ' + ev.self_check_calls + ' · Model Armor ' + ev.model_armor + ' · ' + (ev.runtime === 'vertex_ai_agent_engine' ? 'Agent Engine' : 'in-process'), 'done');
           else if (ev.event === 'complete') step(ev.notes + ' guidance note(s) in ' + ev.latency_ms + ' ms', 'done');
         });

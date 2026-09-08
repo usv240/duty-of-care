@@ -19,12 +19,13 @@ Start with [`JUDGING.md`](JUDGING.md), [`docs/AUDIT-2026-09-04.md`](docs/AUDIT-2
 | `/` Review | Load one of six self-authored presets, upload a Fountain, text, Markdown, or Final Draft `.fdx` draft (parsed in the browser), or paste a scene. Watch each layer report progress live, then get an annotated screenplay page, cited clauses grouped by jurisdiction, one filter-checked alternative, and decision controls. Download JSON or a Markdown report; export explicitly. |
 | `/presets` Demo library | Read every preset, see what it is expected to trigger, download it in three formats, run it. |
 | `/developers` | Mint an API key in one click, run the live pipeline with it from the page, copy the curl, read the envelope and error contract. |
+| `/evidence` | Fourteen verified studies behind the guidance, including the ones that disagree, with DOI and PMID; the same records appear beside every note. |
 | `/stack` | Every Google Cloud and Replit service, what it does here, and whether it is answering right now. The same ribbon is on every page. |
 
 ## Why this is more than a prompt
 
 1. Auditable code identifies a narrow candidate and shows the exact phrase, offsets, and rule.
-2. Google Agent Search retrieves applicable, versioned clauses from a 36-clause approved corpus across five jurisdictions; code filters them by jurisdiction and trigger class, and clauses from different jurisdictions are shown side by side, never merged.
+2. Google Agent Search retrieves applicable, versioned clauses from a 36-clause approved corpus across five jurisdictions; code filters them by jurisdiction and trigger class, and clauses from different jurisdictions are shown side by side, never merged. A second Agent Search store supplies the research behind each clause, verified citations included.
 3. One Google ADK agent definition, bound to the scene through session state, explains only those clauses. It must run the hard safety filter as a tool on its own alternative before answering; the API applies the filter again; Google Cloud Model Armor screens the result. The same definition runs in-process and on Vertex AI Agent Engine.
 4. The writer decides. Nothing is blocked. No overall score exists.
 
@@ -36,12 +37,15 @@ No deterministic trigger plus applicable citation means no guidance flag. Gemini
 |---|---|
 | Gemini on Vertex AI, through Google ADK | Explains retrieved clauses with explicit safety settings; two state-bound tools: `get_bound_guidance`, `check_alternative` |
 | Vertex AI Agent Engine | Managed runtime for the same agent (`duty_of_care_agent`), called over HTTP; in-process ADK is the recorded fallback |
-| Google Agent Search (Discovery Engine) | The only source of guidance text |
+| Google Agent Search (Discovery Engine) | Two data stores: the only source of guidance text, and the research evidence retrieved beside every note |
+| Vertex AI Gen AI Evaluation Service | Independent groundedness and safety scores for the agent's answers, published from the API |
 | Model Armor | Screens the agent's answer for hate, harassment, sexual and dangerous content, prompt injection, malicious URIs, and sensitive data |
 | Cloud Run | Hosts the backend on a dedicated service identity with a warm instance |
 | Secret Manager | Holds the API-key signing secret, mounted as a secret reference |
 | Cloud Build | Runs Ruff, pytest, and the Playwright page check; builds the container |
 | Cloud Logging | One content-free structured line per review |
+| Cloud Monitoring | Uptime check with a content match on the live backend every five minutes |
+| Artifact Registry | Immutable container images built by Cloud Build for every Cloud Run revision |
 
 | Replit | Role |
 |---|---|
@@ -114,6 +118,8 @@ curl -s -N -X POST "$BASE/v1/review/stream" -H "content-type: application/json" 
 
 - `GET /v1/eval/latest` computes precision, recall, and false-flag rate for the deterministic layer live from the 48 CC0 cases in `benchmark/` and lists failures.
 - `python -m scripts.live_eval --base <url>` runs every case and preset through Agent Search, the agent, and Model Armor, and writes `docs/EVAL-LIVE.json`: retrieval coverage, jurisdiction correctness, structure and filter outcomes, latency.
+- `python -m scripts.groundedness_eval --base <url>` asks the Vertex AI Gen AI Evaluation Service to judge every note for groundedness against the retrieved clauses and for safety, and writes `docs/EVAL-GROUNDEDNESS.json`, also served from the evaluation endpoint.
+- `docs/EVIDENCE.md` and `/evidence` hold the research base: fourteen records verified against Europe PMC, retrieved beside every note.
 - `evaluation/` holds the ten-fragment blinded review pack; its labels must come from a qualified independent reviewer, and the endpoint reports that review as pending.
 - The tool never claims that the absence of a flag makes a scene safe.
 

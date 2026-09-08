@@ -56,6 +56,16 @@ def run_benchmark(root: Path) -> dict[str, Any]:
             outcome: sum(1 for item in published.get("results", []) if item.get("outcome") == outcome)
             for outcome in ("grounded", "partially_grounded", "not_grounded", "clean", "false_candidate", "error")
         }
+    quality_path = root / "docs" / "EVAL-GROUNDEDNESS.json"
+    quality: dict[str, Any] | None = None
+    if quality_path.exists():
+        judged = json.loads(quality_path.read_text("utf-8"))
+        quality = {key: value for key, value in judged.items() if key != "notes"}
+        quality["per_note"] = [
+            {k: v for k, v in note.items() if k not in ("groundedness", "safety")}
+            | {"groundedness": (note.get("groundedness") or {}).get("score"), "safety": (note.get("safety") or {}).get("score")}
+            for note in judged.get("notes", [])
+        ]
     return {
         "layer": "deterministic_triggers",
         "cases": len(cases),
@@ -73,6 +83,7 @@ def run_benchmark(root: Path) -> dict[str, Any]:
             "whether any suggested alternative reads well to a writer",
         ],
         "live_pipeline": live or {"status": "not_published", "how": "python -m scripts.live_eval --base <url>"},
+        "agent_quality": quality or {"status": "not_published", "how": "python -m scripts.groundedness_eval --base <url>"},
         "independent_review": {
             "status": "pending",
             "pack": "evaluation/expert-review-set.json",

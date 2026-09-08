@@ -35,7 +35,7 @@ from fastapi.staticfiles import StaticFiles
 from google import genai
 from pydantic import BaseModel, Field, model_validator
 
-from . import apikeys, model_armor, replit_platform, telemetry
+from . import apikeys, evidence, model_armor, replit_platform, telemetry
 from .adk_app import agent_engine_resource, explain_grounded_flag
 from .eval import run_benchmark
 from .filters import DISCLAIMER, validate_rendered_text
@@ -70,7 +70,7 @@ _HEALTH: dict[str, object] = {"checked": 0.0, "value": None}
 _LIMITER = SlidingWindow(window_seconds=60)
 BASE_LIMITS = {"review": 6, "keys": 10, "exports": 10, "decisions": 30}
 _LAST_AGENT_RUNTIME: dict[str, str | None] = {"runtime": None, "model_armor": None}
-PAGES = {"/": "index.html", "/presets": "presets.html", "/developers": "developers.html", "/stack": "stack.html"}
+PAGES = {"/": "index.html", "/presets": "presets.html", "/developers": "developers.html", "/stack": "stack.html", "/evidence": "evidence.html"}
 
 
 def _version(distribution: str) -> str | None:
@@ -239,6 +239,8 @@ async def stack() -> dict[str, object]:
         model=MODEL,
         agent_engine={"resource": agent_engine_resource(), "last_runtime": _LAST_AGENT_RUNTIME["runtime"]},
         model_armor={"template": model_armor.template_name(), "last_status": _LAST_AGENT_RUNTIME["model_armor"]},
+        evidence_store=evidence.configured(),
+        agent_quality=run_benchmark(ROOT).get("agent_quality"),
     )
     payload["timing"] = {"query_ms": round((time.perf_counter() - started) * 1000, 1)}
     return {"data": payload, "disclaimer": validate_rendered_text(DISCLAIMER)}
@@ -349,6 +351,23 @@ def guidance() -> dict[str, object]:
     }
 
 
+@app.get("/v1/evidence")
+def evidence_base() -> dict[str, object]:
+    """The research behind the guidance: verified citations, findings, and trigger-class mapping."""
+    loaded = evidence.local_records()
+    return {
+        "data": {
+            "records": loaded["records"],
+            "count": len(loaded["records"]),
+            "verified_on": loaded["verified_on"],
+            "verified_against": loaded["verified_against"],
+            "evidence_version": replit_platform.corpus_version(evidence.EVIDENCE_PATH),
+            "retrieval": "google_agent_search" if evidence.configured() else "not_configured_on_this_host",
+        },
+        "disclaimer": validate_rendered_text(DISCLAIMER),
+    }
+
+
 @app.get("/v1/eval/latest")
 def eval_latest() -> dict[str, object]:
     """The deterministic-layer benchmark, computed live from the shipped cases."""
@@ -434,7 +453,13 @@ async def _review(
             await progress({"event": "retrieved", "scene_id": scene_id, "clause_count": len(clauses), "publishers": sorted({c.publisher for c in clauses})})
             if not clauses:
                 return None
-            await progress({"event": "explaining", "scene_id": scene_id, "runtime": "vertex_ai_agent_engine" if agent_engine_resource() else "adk_in_process"})
+            # Research behind the guidance, from the second Agent Search store. Supplementary:
+            # a retrieval failure here leaves the note intact rather than failing the review.
+            try:
+                research = await asyncio.to_thread(evidence.evidence_for, [item.trigger_class for item in relevant])
+            except Exception:  # noqa: BLE001 - recorded as empty; the clauses are the decision, not this
+                research = []
+            await progress({"event": "explaining", "scene_id": scene_id, "runtime": "vertex_ai_agent_engine" if agent_engine_resource() else "adk_in_process", "evidence": len(research)})
             try:
                 explanation = await explain_grounded_flag(
                     scene,
@@ -474,6 +499,7 @@ async def _review(
                 "clauses": clause_dicts,
                 "jurisdictions": by_jurisdiction,
                 "divergence": divergence,
+                "evidence": research,
                 "agent": explanation,
                 "state": "open",
             }

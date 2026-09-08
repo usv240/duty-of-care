@@ -20,12 +20,12 @@ def _required(name: str) -> str:
     return value
 
 
-def _serving_config() -> str:
+def _serving_config(data_store: str | None = None) -> str:
     # Some Cloud Run revisions expose the numeric project number through
     # GOOGLE_CLOUD_PROJECT. Agent Search resource names use the project ID.
     project = os.getenv("GOOGLE_CLOUD_PROJECT_ID") or _required("GOOGLE_CLOUD_PROJECT")
     location = os.getenv("VERTEX_SEARCH_LOCATION", "global")
-    data_store = _required("VERTEX_SEARCH_DATA_STORE")
+    data_store = data_store or _required("VERTEX_SEARCH_DATA_STORE")
     return (
         f"projects/{project}/locations/{location}/collections/default_collection/"
         f"dataStores/{data_store}/servingConfigs/default_search"
@@ -41,12 +41,17 @@ def _as_plain(value: Any) -> Any:
 
 
 def _search(query: str, page_size: int) -> list[dict[str, Any]]:
+    return _search_store(None, query, page_size)
+
+
+def _search_store(data_store: str | None, query: str, page_size: int) -> list[dict[str, Any]]:
+    """One Agent Search round trip against a named data store (default: the guidance store)."""
     credentials, _ = google.auth.default(
         scopes=["https://www.googleapis.com/auth/cloud-platform"]
     )
     session = AuthorizedSession(credentials)
     response = session.post(
-        f"https://discoveryengine.googleapis.com/v1/{_serving_config()}:search",
+        f"https://discoveryengine.googleapis.com/v1/{_serving_config(data_store)}:search",
         json={"query": query, "pageSize": page_size},
         headers={
             "X-Goog-User-Project": os.getenv("GOOGLE_CLOUD_PROJECT_ID")

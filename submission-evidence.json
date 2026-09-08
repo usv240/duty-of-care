@@ -9,11 +9,11 @@
   "license": "Apache-2.0",
   "google_runtime": {
     "status": "verified",
-    "technologies": ["Gemini on Vertex AI", "Google ADK", "Vertex AI Agent Engine", "Google Agent Search", "Model Armor", "Cloud Run", "Secret Manager", "Cloud Build", "Cloud Logging"],
+    "technologies": ["Gemini on Vertex AI", "Google ADK", "Vertex AI Agent Engine", "Google Agent Search (guidance and evidence stores)", "Model Armor", "Vertex AI Gen AI Evaluation Service", "Cloud Run", "Artifact Registry", "Secret Manager", "Cloud Build", "Cloud Logging", "Cloud Monitoring"],
     "evidence": ["/health", "/v1/stack", "docs/LIVE-ACCEPTANCE.json"]
   },
   "product": {
-    "pages": ["/", "/presets", "/developers", "/stack"],
+    "pages": ["/", "/presets", "/evidence", "/developers", "/stack"],
     "presets": 6,
     "downloads": ["fountain", "txt", "json", "review json", "review markdown", "explicit export"],
     "bring_your_own": ["paste", ".fountain", ".txt", ".md", ".fdx (browser-parsed)"],

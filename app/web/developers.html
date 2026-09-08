@@ -55,6 +55,7 @@ console.log(await res.text()); // a Markdown report, disclaimer first</pre></art
         <tr><td><code>POST /v1/review/stream</code></td><td>The same review as newline-delimited JSON progress events (parsed, retrieving, retrieved, explaining, explained, complete) ending with <code>result</code> or <code>error</code>. This is what the workbench uses.</td><td>Same as review</td></tr>
         <tr><td><code>POST /v1/report</code></td><td>Render a Markdown report from a review payload you already hold. No model call.</td><td>No</td></tr>
         <tr><td><code>GET /v1/presets</code>, <code>/v1/presets/{id}</code>, <code>/v1/presets/{id}/download</code></td><td>The demo library and downloads in fountain, txt, or json.</td><td>No</td></tr>
+        <tr><td><code>GET /v1/evidence</code></td><td>The research behind the guidance: 14 verified records with DOI and PMID, findings, and the trigger classes each bears on. Retrieved per note as <code>grounded_flags[].evidence</code>.</td><td>No</td></tr>
         <tr><td><code>GET /v1/guidance</code></td><td>The approved corpus with provenance and <code>corpus_version</code>.</td><td>No</td></tr>
         <tr><td><code>GET /v1/resources?region=</code></td><td>Region-aware support resources.</td><td>No</td></tr>
         <tr><td><code>GET /v1/eval/latest</code></td><td>The deterministic-layer benchmark, computed live from the shipped 48 cases, with failures listed.</td><td>No</td></tr>

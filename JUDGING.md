@@ -18,10 +18,11 @@
 
 ## Ninety-second test
 
-1. Open `/`. The guidance case is preloaded. Press Review and watch each layer report progress: parsed, Agent Search retrieving, Agent Engine explaining. Three notes appear, each with the phrase that fired, publisher-attributed clauses grouped by jurisdiction, and one alternative with its filter, self-check, runtime, and Model Armor chips.
+1. Open `/`. The guidance case is preloaded. Press Review and watch each layer report progress: parsed, Agent Search retrieving, Agent Engine explaining. Three notes appear, each with the phrase that fired, publisher-attributed clauses grouped by jurisdiction, the research behind them with DOI links (including the studies that disagree), and one alternative with its filter, self-check, runtime, and Model Armor chips.
 2. Dismiss a note and type a reason: the reasoning stays visible in the decision record.
 3. Load "Through This Minute" (responsible depiction): zero candidates, zero notes, and the page still says this is not certification.
 4. Open `/developers`, press "Get an API key now", press "Run POST /v1/review": the live JSON with `meta.gate` appears; download the Markdown report.
-5. Open `/stack`: Google cards should be live or active; Replit Agent and Autoscale must be `pending` until the owner's evidence exists.
+5. Open `/evidence`: fourteen verified studies, grouped by mechanism, fiction, contested findings, guideline effectiveness, and reviews.
+6. Open `/stack`: Google cards should be live or active, including Agent Engine, Model Armor, the Gen AI Evaluation Service, and Cloud Monitoring; Replit Agent is active once the owner's evidence exists, Autoscale until the public deployment exists.
 
 Duty of Care is not clinical review, censorship, certification, or proof that a scene is safe.
