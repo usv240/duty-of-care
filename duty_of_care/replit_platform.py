@@ -397,6 +397,33 @@ def export_store() -> ExportStore:
     return _EXPORT_STORE
 
 
+def put_export(name: str, text: str) -> tuple[str, str, str | None]:
+    """Store an export on the primary store, falling back to a local file and saying so.
+
+    App Storage on Replit needs a bucket attached to the app; until it is, the
+    export still works and the response names the backend that actually held it.
+    """
+    primary = export_store()
+    try:
+        return primary.put(name, text), primary.backend, None
+    except Exception as exc:  # noqa: BLE001 - the fallback is the point; the reason is reported
+        if primary.backend == "local_file":
+            raise
+        fallback = FileExportStore()
+        return (
+            fallback.put(name, text),
+            fallback.backend,
+            f"{primary.backend} failed ({type(exc).__name__}); stored locally instead",
+        )
+
+
+def get_export(export_id: str) -> str | None:
+    text = export_store().get(export_id)
+    if text is None and export_store().backend != "local_file":
+        text = FileExportStore().get(export_id)
+    return text
+
+
 # ------------------------------------------------------- scheduled re-check ----
 
 

@@ -284,7 +284,7 @@ def build_stack(
             evidence=(
                 f"serving from {replit.get('runtime', {}).get('domains')}"
                 if deployment
-                else None
+                else ("workspace on Replit; not yet published" if on_replit else "no Replit deployment answered this request")
             ),
             reference=".replit",
         ),
