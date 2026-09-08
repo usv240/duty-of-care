@@ -6,9 +6,9 @@
 Duty of Care is a guidance-grounded pre-review for independent screenwriters depicting suicide, self-harm, or addiction. It is not a censor, clinician, or certification system. Every note can be accepted, dismissed, or sent for expert review, and the writer remains the decision owner.
 
 **Live Google agent backend:** https://duty-of-care-agent-backend-109051079423.us-central1.run.app
-**Replit product surface:** pending the owner's Replit Agent build and Autoscale deployment (see [`replit.md`](replit.md)).
+**Replit product surface (the hosted project):** https://duty-of-care.replit.app
 
-Start with [`JUDGING.md`](JUDGING.md), [`docs/AUDIT-2026-09-04.md`](docs/AUDIT-2026-09-04.md), and the machine-readable [`submission-evidence.json`](submission-evidence.json). They preserve the mandatory Replit blocker honestly.
+Start with [`JUDGING.md`](JUDGING.md), [`docs/AUDIT-2026-09-04.md`](docs/AUDIT-2026-09-04.md), [`docs/REPLIT-BUILD-EVIDENCE.md`](docs/REPLIT-BUILD-EVIDENCE.md), and the machine-readable [`submission-evidence.json`](submission-evidence.json).
 
 ![The review workbench with an annotated screenplay page, cited clauses, and the agent's alternative](docs/img/desktop-review.png)
 

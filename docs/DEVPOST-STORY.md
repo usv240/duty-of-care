@@ -22,7 +22,7 @@ The same review is a **public API**: one-click keys, a `meta.gate` field naming 
 
 **Google Cloud (the agent and its judges):** Gemini on Vertex AI through the Agent Development Kit, with explicit safety settings. The identical agent is deployed to Vertex AI Agent Engine and called over HTTP, with in-process ADK as the recorded fallback. Google Agent Search (Discovery Engine) runs two data stores, guidance and evidence, and is the only source of either. Model Armor screens the agent's answer. The Vertex AI Gen AI Evaluation Service scores groundedness and safety independently. Cloud Run hosts the backend, Artifact Registry holds its images, Secret Manager holds the key-signing secret, Cloud Build runs the checks, Cloud Logging keeps content-free traces, and a Cloud Monitoring uptime check watches the public endpoint.
 
-**Replit (the product):** the writer-facing app is built with Replit Agent and deployed on Replit Autoscale at `[REPLIT_URL]`. Agent `[what Agent built, from its summary]`. `[Replit Auth / Database / App Storage / Scheduled Deployment: list only what Agent actually enabled]`. The Replit surface never holds a Google credential; it calls the Cloud Run backend.
+**Replit (the product):** the writer-facing app is built with Replit Agent and deployed on Replit Autoscale at https://duty-of-care.replit.app. Agent built the fixed-origin backend proxy that lets the Replit surface call Cloud Run for exactly the allowlisted routes, with 2 MB request, 10 MB response, and 120 s limits, redirect rejection, typed errors on oversized or timed-out streams, and nine tests, plus the platform tests for Replit Database and App Storage selection. Replit Secrets hold only the backend URL and a signing secret; the Replit surface never holds a Google credential. Replit Auth, Database, and App Storage adapters are in the code with labelled fallbacks; we list them as active only where the deployment confirms it.
 
 **Plain code where code belongs:** the candidate rules and the safety filter are regular expressions, not a model, so a writer can read exactly why something was underlined.
 
@@ -51,6 +51,6 @@ An independent reviewer's labels on the blinded pack, more jurisdictions and stu
 
 ## Links
 
-- Live app: `[REPLIT_URL]`
+- Live app: https://duty-of-care.replit.app
 - Google agent backend: https://duty-of-care-agent-backend-109051079423.us-central1.run.app
 - Source (Apache-2.0): https://github.com/usv240/duty-of-care

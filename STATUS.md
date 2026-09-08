@@ -22,9 +22,9 @@ Last verified: 2026-09-04 (see `docs/AUDIT-2026-09-04.md` and `docs/LIVE-ACCEPTA
 | Public API with one-click keys and live run | Pass | `/developers`, `POST /v1/keys`, `meta.gate`, Markdown report; signing secret in Secret Manager |
 | Sponsor stack visible on every page | Pass | Ribbon on all pages, `/stack`, `/v1/stack` with earned statuses |
 | Offline automated suite | Pass | 54 tests, Ruff clean, Playwright page check across five pages at two widths (2026-09-08, local; CI runs the same) |
-| Replit Agent used materially | **Pending external action** | Follow `replit.md`; `/stack` stays `pending` until evidence variables are set |
-| Public Replit deployment | **Pending external action** | Must verify signed-out `replit.app`/`replit.dev` URL |
-| Replit Auth, Database, App Storage, Scheduled Deployment live | **Pending external action** | Adapters shipped with local fallbacks; verify on Replit via `/v1/me`, `/v1/decisions`, `/v1/exports`, `/stack` |
+| Replit Agent used materially | Pass | Agent commits `21d70ef`, `077ca7e` (2026-09-05) built the allowlisted backend proxy and tests; `docs/REPLIT-BUILD-EVIDENCE.md`; `/stack` shows Replit Agent active |
+| Public Replit deployment | Pass | https://duty-of-care.replit.app (Autoscale), verified signed-out 2026-09-08 at desktop and phone widths; pull and republish pending for the Evidence page and self-reported stack |
+| Replit Auth, Database, App Storage, Scheduled Deployment live | **Pending owner activation** | Adapters and Agent-written tests exist; enable in the workspace, then verify via `/v1/me`, `/v1/decisions`, `/v1/exports`, `/stack` |
 | Qualified independent ten-fragment review | **Pending external action** | Send `evaluation/` pack; `/v1/eval/latest` reports it as pending |
 | Public demo video, at most 3 minutes | **Pending external action** | Record only after Replit URL and evidence exist |
 | Devpost submission | **Pending external action** | Complete form before 2026-09-09 14:00 PT |

@@ -124,7 +124,6 @@
     "fallback_to_in_process": "10 of 34 model-backed cases, recorded per note"
   },
   "claims_not_yet_verified": [
-    "public Replit deployment",
     "Replit Auth, Database, App Storage, and Scheduled Deployment live on Replit",
     "qualified independent ten-fragment review",
     "public demo video",
@@ -151,5 +150,25 @@
     "uptime_check": "duty-of-care-health",
     "period_seconds": 300,
     "content_match": "guidance-case on /v1/presets"
+  },
+  "replit_deployment": {
+    "url": "https://duty-of-care.replit.app",
+    "type": "autoscale",
+    "verified": "2026-09-08 23:20-23:25 UTC",
+    "keyed_review_seconds": 28.2,
+    "notes": 3,
+    "agent_runtime": "vertex_ai_agent_engine",
+    "stream_events_seconds": [
+      0.2,
+      0.3,
+      0.4,
+      5.6,
+      5.7
+    ],
+    "pending": [
+      "pull 650f4e0 and republish",
+      "Auth/Database/App Storage activation",
+      "Scheduled Deployment"
+    ]
   }
 }

@@ -3,8 +3,11 @@
 Filled 2026-09-08 from the owner's session driving the official Replit MCP
 server (`https://replit-mcp.com/server/mcp`). Every line below is backed by the
 workspace git log, an Agent answer, a Cloud Run revision, or an HTTP response.
-Lines that could not be backed say so explicitly. **The Replit requirement is
-not passed**: the Agent build exists, but the public deployment does not yet.
+Lines that could not be backed say so explicitly. **Both mandatory Replit items
+now exist**: the Agent build (below) and a public Autoscale deployment at
+`https://duty-of-care.replit.app`, first published by the owner from the Replit
+website on 2026-09-08 and verified signed-out the same evening. Items still open
+are quality and completeness, not eligibility.
 
 ## Replit Agent
 
@@ -114,58 +117,58 @@ DUTY_OF_CARE_REPLIT_AGENT_COMMIT=077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d
 
 ## Replit deployment
 
-- Public URL: **none yet.** `publish_app` through the MCP server on 2026-09-08
-  returned: "Publishing this type of app from chat is not supported yet. Open
-  the app on the Replit website and publish it there the first time; after
-  that, publish_app can republish it from chat." `get_publish_status` returns
-  `found: false`.
-- Deployment type: Autoscale is declared in `.replit`
-  (`deploymentTarget = "autoscale"`, Uvicorn on `$PORT`); no deployment exists.
-- Secrets set on Replit: `DUTY_OF_CARE_BACKEND_URL` and
-  `DUTY_OF_CARE_API_KEY_SECRET` were added by the owner on 2026-09-08
-  (owner's own record; not verifiable through the MCP server). The two
-  evidence variables are not yet set on Replit. No Google service-account key.
-- Replit Auth: not verified — code path and tests exist; no `/v1/me` proof
-  while signed in.
-- Replit Database: not verified — adapter and selection test exist; no
-  `GET /v1/decisions` `backend` field from the deployed app.
-- Replit App Storage: not verified — adapter and selection test exist; no
-  `POST /v1/exports` `backend` field from the deployed app.
-- Scheduled Deployment: not created. Agent explicitly did not claim it.
-  Command when created: `python -m scripts.scheduled_recheck`, nightly.
+- Public URL: **https://duty-of-care.replit.app** (Autoscale). First published by the owner from the
+  Replit website on 2026-09-08; `GET /v1/me` on that URL returns
+  `runtime.on_replit: true`, `deployment: true`, `domains: duty-of-care.replit.app`,
+  `surface: replit`, which only a Replit deployment can report.
+- Deployment type: Autoscale, run command `uvicorn duty_of_care.main:app --host 0.0.0.0 --port 8080`.
+- Secrets set on Replit: `DUTY_OF_CARE_BACKEND_URL` and `DUTY_OF_CARE_API_KEY_SECRET`
+  (keys mint on the Replit URL: `POST /v1/keys` returned a key and a keyed review
+  succeeded, which proves the signing secret is present). The two evidence
+  variables were requested at publish time; not yet confirmed from the deployment.
+  No Google service-account key anywhere on Replit.
+- Proxy to the Google backend: working. A keyed `POST /v1/review` on the Replit
+  URL for the guidance case returned 3 grounded notes in 28.2 s with
+  `meta.agent_runtime: ["vertex_ai_agent_engine"]`, Model Armor screened, and 3
+  research records per note; `/v1/review/stream` delivered progress events at
+  0.2, 0.3, 0.4, 5.6, 5.7 s and then the result; the control preset returned
+  `no_candidates`; Markdown report and preset downloads served.
+- Replit Auth: not verified while signed in. `/v1/me` signed out reports
+  `signed_in: false`; `/v1/decisions` returns `401 sign_in_required` as designed.
+- Replit Database: not verified from the deployment (the proxied `/health`
+  reported the backend's view, see below).
+- Replit App Storage: `POST /v1/exports` on the Replit URL returned 500 at
+  23:23 UTC, consistent with no bucket attached; commit `650f4e0` makes the
+  route fall back to a local file and state the reason. Verify after republish.
+- Scheduled Deployment: not created yet. Command: `python -m scripts.scheduled_recheck`, nightly.
 
-## Signed-out verification
-
-Not run: there is no public URL yet. Every cell stays empty until the first
-publish from the Replit website.
+## Signed-out verification (2026-09-08, 23:20-23:25 UTC, headless Chromium, 1280 and 390 px)
 
 | Check | Desktop | Mobile | Time (UTC) |
 |---|---|---|---|
-| `/` loads light, ribbon shows Replit tools active | | | |
-| Guidance case returns cited clauses and an ADK explanation | | | |
-| Responsible depiction returns zero notes | | | |
-| Dismissal keeps reasoning visible | | | |
-| `/developers` mints a key and runs live | | | |
-| `/presets` downloads work | | | |
-| `/stack` shows Replit Agent and Autoscale as active | | | |
-| Crisis footer visible on every page | | | |
-| `/health` reports `product_surface: replit` | | | |
+| `/` loads light, ribbon present | pass (16 tools; 19 after the pending pull) | pass | 23:22 |
+| Guidance case returns cited clauses and an ADK explanation | pass: 3 notes, 5 underlines, Agent Engine runtime | not run | 23:23 |
+| Responsible depiction returns zero notes | pass (`no_candidates`, 0.2 s) | not run | 23:23 |
+| Dismissal keeps reasoning visible | pass: decision record shows the reason | not run | 23:23 |
+| `/developers` mints a key and runs live | pass: "3 guidance note(s), 8 candidate(s)" | not run | 23:24 |
+| `/presets` downloads work | pass (`uk-drama.fountain` attachment) | pass | 23:22 |
+| `/stack` shows Replit Agent active | pass (Agent active); Autoscale showed pending because the deployed code still proxied `/v1/stack` to the backend; fixed in `650f4e0`, pending pull and republish | same | 23:22 |
+| Crisis footer visible on every page | pass on `/`, `/presets`, `/developers`, `/stack`; `/evidence` was 404 on the deployed code (page added after Agent's build; pending pull) | same | 23:22 |
+| `/health` reports `product_surface: replit` | not yet: `/health` was proxied to the backend and reported `cloud_run_fallback`; `650f4e0` reads the Google group from the backend and reports the Replit surface locally; pending pull and republish | same | 23:22 |
+| No console errors | two 404s, both from `/evidence` assets not present in the deployed code | same | 23:22 |
 
 ## Still open
 
-- First publish (Autoscale) from the Replit website; afterwards
-  `publish_app` can republish from chat.
-- Push the workspace commits (`21d70efc`, `077ca7e8`) from the Replit Git pane
-  to `main` of `usv240/duty-of-care` so the recorded SHA exists on GitHub.
-- Add `DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL` and
-  `DUTY_OF_CARE_REPLIT_AGENT_COMMIT` as Replit Secrets so `/stack` on the
-  Replit surface agrees with Cloud Run.
+- Pull `main` (`650f4e0`) into the workspace, push the workspace commits
+  (`21d70efc`, `077ca7e8`) to GitHub, remove `/health` and `/v1/stack` from the
+  proxy allowlist and add `/v1/evidence`, then republish so the Replit URL
+  reports its own surface and serves the Evidence page.
+- Add `DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL` and `DUTY_OF_CARE_REPLIT_AGENT_COMMIT`
+  as Replit Secrets if not already included in the deployment.
 - Enable Replit Auth, Replit Database (Postgres), and App Storage in the
-  workspace; create the nightly Scheduled Deployment.
-- Run the signed-out desktop and mobile verification table and record proof
-  from `/v1/me`, `/v1/decisions`, `/v1/exports`, and `/stack`.
-- Independently re-run the test suite outside the workspace once the commits
-  are on GitHub.
+  workspace; create the nightly Scheduled Deployment; then verify `/v1/me` signed
+  in, `/v1/decisions` backend, `/v1/exports` backend.
+- Re-run the mobile column for the review flow after republish.
 
 Do not mark the Replit requirement passed until every mandatory track item in
 `Rules.md` and the public deployment have been independently checked.
