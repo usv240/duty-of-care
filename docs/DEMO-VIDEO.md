@@ -166,7 +166,12 @@ leave a beat of silence after it.
 **NAVIGATE:** click **Stack** in the top navigation. One slow scroll through the
 Google group into the Replit group. Do not read the cards aloud.
 
-**SAY:** **"Every service on this page reports whether it answered this review. Agent Search, Agent Engine, Gemini, Model Armor, and the Replit deployment. One card reads configured rather than active, because its write failed."**
+All twelve Google cards read live, active or applied once you have run a review.
+In the Replit group, **App Storage** and **Scheduled Deployment** read
+`configured`. Do not name a number on camera — the line below covers however
+many there are on the day.
+
+**SAY:** **"Every service on this page reports whether it answered this review. Agent Search, Agent Engine, Gemini, Model Armor, and the Replit deployment. The cards reading configured are the ones we set up but never got a live result from."**
 
 ---
 
@@ -185,7 +190,7 @@ Stop recording.
 
 Cut in this order, and only in this order:
 
-1. The last clause of the stack beat: **"One card reads configured rather than active, because its write failed."** Worth about four seconds.
+1. The last clause of the stack beat: **"The cards reading configured are the ones we set up but never got a live result from."** Worth about four seconds.
 2. The two research lines in the note anatomy (0:50–1:30). The panel stays on
    screen, so a judge reads it without narration.
 3. The `meta.gate` line at 2:07.
