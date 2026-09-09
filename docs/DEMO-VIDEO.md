@@ -82,15 +82,15 @@ so you can find each item without hunting:
 | 1 | Heading `INT. MARA'S APARTMENT - LATER`, and on its right `Open · writer decides` |
 | 2 | Four coloured chips: Method specificity, Framed as solution, No help-seeking, Repetition |
 | 3 | Four grey rule lines, each ending `Matched: "…"` |
-| 4 | Heading **`Retrieved by Google Agent Search · 6 clauses`**, then six clause rows, each with a square publisher badge (NAA or WHO), the clause text in italics, a jurisdiction tag, the version, and `Open source ↗` |
-| 5 | Heading **`Why the guidance says this · research retrieved by Google Agent Search`**, then three studies, each with a `doi:` link, its finding, and a line starting `For the writer:` |
-| 6 | The link `All records and the studies that disagree →` |
-| 7 | A dashed box beginning `Guidance by jurisdiction: US (5) · GLOBAL (1)` |
-| 8 | The teal box headed `GOOGLE ADK REVIEWER · SUGGESTED ALTERNATIVE, PRESERVES DRAMATIC INTENT`, with five chips underneath it |
-| 9 | Three buttons: Accept note, Dismiss note, Request expert review, and a reason field |
+| 4 | Heading **`RETRIEVED BY GOOGLE AGENT SEARCH · 6 CLAUSES`**, then six clause rows, each with a square publisher badge (NAA or WHO), the clause in italics, a jurisdiction tag, the version, and `Open source ↗` |
+| 5 | A **folded** line, **`WHY THE GUIDANCE SAYS THIS · 3 STUDIES RETRIEVED BY GOOGLE AGENT SEARCH ▸`**. Click it to open the three studies |
+| 6 | A dashed box beginning `Guidance by jurisdiction: US (5) · GLOBAL (1)` |
+| 7 | The teal box headed `GOOGLE ADK REVIEWER · SUGGESTED ALTERNATIVE, PRESERVES DRAMATIC INTENT` with five chips, then a folded `Why this guidance may apply ▸`, then the heading `ONE ALTERNATIVE THAT KEEPS THE DRAMA` and the rewrite itself |
+| 8 | Three buttons: Accept note, Dismiss note, Request expert review, and a reason field |
 
 On the **left** of all this sits the screenplay page with the coloured
-underlines.
+underlines. The whole note fits on roughly one screen, so you can point at every
+item without scrolling away from the screenplay.
 
 ---
 
@@ -101,18 +101,21 @@ a red underline and a small triangle.
 **POINT AT:** item 4, the first clause row, sweeping across to `Open source ↗`.
 **SAY:** **"Beside it, the clause it cites. National Action Alliance, twenty nineteen, with a link to the document."**
 
-**POINT AT:** item 5, the third study, `EClinicalMedicine 2021`, and its finding.
+**CLICK:** item 5, the folded line `WHY THE GUIDANCE SAYS THIS`. It opens to
+three studies. Point at the third, `EClinicalMedicine 2021`.
 **SAY:** **"Under that, the research behind the guidance. A meta-analysis of fictional portrayals found an eighteen percent increase in suicides."**
 
-**POINT AT:** item 6, the link reading `All records and the studies that disagree →`.
+**POINT AT:** the link at the foot of that fold, `All records and the studies that disagree →`.
 **SAY:** **"And we include the studies that disagree."**
 
-**POINT AT:** item 8, the teal box, then run across its five chips.
+**POINT AT:** item 7, the teal box, running across its five chips, then down to
+the rewrite under `ONE ALTERNATIVE THAT KEEPS THE DRAMA`.
 **SAY:** **"Then one alternative that keeps the drama. The agent had to pass our own safety filter before it could answer, and Model Armor screened the result."**
 
 The chips read `gemini-2.5-flash`, `filter: passed`, `self-checks: 1`,
 `Agent Engine`, `Model Armor: clear`. Do not read them out; the camera does that
-work for you.
+work for you. Leave the `Why this guidance may apply` fold closed unless you have
+spare time, in which case opening it shows the agent reasoning clause by clause.
 
 ---
 

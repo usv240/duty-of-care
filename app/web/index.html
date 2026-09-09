@@ -15,7 +15,7 @@
     </section>
     <div class="facts shell"><div><span>Decision owner</span><strong>The writer</strong></div><div><span>Grounding</span><strong>Google Agent Search</strong></div><div><span>Agent</span><strong>Google ADK + Gemini</strong></div><div><span>Overall score</span><strong>Deliberately absent</strong></div></div>
 
-    <section class="section shell" id="review"><p class="eyebrow">Try the complete workflow</p><h2>Six demo drafts, or bring your own.</h2>
+    <section class="section shell wide" id="review"><p class="eyebrow">Try the complete workflow</p><h2>Six demo drafts, or bring your own.</h2>
       <form class="card editor" data-form>
         <div class="editrow">
           <div><label for="scene">Screenplay — paste, upload, or load a demo preset</label><textarea id="scene" name="screenplay" spellcheck="false" placeholder="INT. KITCHEN - DAWN&#10;…"></textarea><p class="small" data-source-note>Nothing is uploaded until you press Review. Your text is not stored.</p></div>
@@ -55,6 +55,7 @@
   <script src="/static/site.js"></script>
   <script>
     let presets = [], currentPreset = null, lastResult = null, writer = null;
+    const ALT_HEADING = 'One alternative that keeps the drama';
     const decisions = [];
     const $ = window.$q;
 
@@ -179,16 +180,17 @@
         });
         note.append(srcs);
         if (flag.evidence && flag.evidence.length) {
-          const ev = el('div', undefined, 'evidence');
-          const eh = el('div', undefined, 'srchead'); eh.append(el('span', 'Why the guidance says this · research retrieved by Google Agent Search')); ev.append(eh);
+          const ev = el('details', undefined, 'fold evidence');
+          ev.append(el('summary', 'Why the guidance says this · ' + flag.evidence.length + ' stud' + (flag.evidence.length === 1 ? 'y' : 'ies') + ' retrieved by Google Agent Search'));
+          const evbody = el('div', undefined, 'foldbody'); ev.append(evbody);
           flag.evidence.forEach(x => {
             const row = el('div', undefined, 'evrow');
             const head = el('div'); head.append(el('strong', x.title)); head.append(el('span', ' · ' + String(x.authors).split(',')[0] + (String(x.authors).includes(',') ? ' et al.' : '') + ' · ' + x.journal + ' ' + x.year + ' · ', 'small'));
             const a = el('a', 'doi:' + x.doi); a.href = 'https://doi.org/' + x.doi; a.target = '_blank'; a.rel = 'noreferrer'; head.append(a);
             row.append(head, el('p', x.finding, 'small'), el('p', 'For the writer: ' + x.relevance, 'small'));
-            ev.append(row);
+            evbody.append(row);
           });
-          const more = el('a', 'All records and the studies that disagree →'); more.href = '/evidence'; more.className = 'small'; ev.append(more);
+          const more = el('a', 'All records and the studies that disagree →'); more.href = '/evidence'; more.className = 'small'; evbody.append(more);
           note.append(ev);
         }
         if (flag.jurisdictions && Object.keys(flag.jurisdictions).length > 1) {
@@ -205,7 +207,23 @@
         if (flag.agent && typeof flag.agent.self_check_calls === 'number') who.append(el('span', 'self-checks: ' + flag.agent.self_check_calls, 'modelchip'));
         if (flag.agent && flag.agent.runtime) who.append(el('span', { vertex_ai_agent_engine: 'Agent Engine', adk_in_process: 'ADK in-process', adk_in_process_fallback: 'ADK in-process (Agent Engine fallback)' }[flag.agent.runtime] || flag.agent.runtime, 'modelchip'));
         if (flag.agent && flag.agent.model_armor) who.append(el('span', 'Model Armor: ' + (flag.agent.model_armor.status === 'screened' ? (flag.agent.model_armor.match ? 'withheld' : 'clear') : flag.agent.model_armor.status), 'modelchip'));
-        rev.append(who, el('p', (flag.agent && flag.agent.text) || 'No alternative was generated.')); note.append(rev);
+        rev.append(who);
+        const agentText = (flag.agent && flag.agent.text) || 'No alternative was generated.';
+        const cut = agentText.indexOf(ALT_HEADING);
+        if (cut >= 0) {
+          const why = agentText.slice(0, cut).replace(/^\s*Why this guidance may apply\s*/i, '').trim();
+          const alt = agentText.slice(cut + ALT_HEADING.length).trim();
+          if (why) {
+            const fold = el('details', undefined, 'fold');
+            fold.append(el('summary', 'Why this guidance may apply'));
+            const body = el('div', undefined, 'foldbody'); body.append(el('p', why)); fold.append(body);
+            rev.append(fold);
+          }
+          rev.append(el('p', ALT_HEADING, 'althead'), el('p', alt));
+        } else {
+          rev.append(el('p', agentText));
+        }
+        note.append(rev);
         const controls = el('div', undefined, 'controls');
         const reason = el('input'); reason.type = 'text'; reason.placeholder = 'Your reason (kept with the decision)'; reason.maxLength = 2000;
         [['Accept note', 'accepted'], ['Dismiss note', 'dismissed'], ['Request expert review', 'expert_review']].forEach(pair => { const b = el('button', pair[0]); b.type = 'button'; b.onclick = () => recordDecision(flag, pair[1], reason.value.trim(), state, note); controls.append(b); });
