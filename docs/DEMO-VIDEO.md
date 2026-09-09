@@ -70,20 +70,49 @@ appears; it is your visual aid, so you are never waiting in silence.
 
 ### 0:50–1:30 — Anatomy of one note (criteria: Technological Implementation + Potential Impact)
 
-**NAVIGATE:** the results appear. Scroll so one full note sits beside the
-screenplay page.
+**Use the second note, headed `INT. MARA'S APARTMENT - LATER`.** The first note
+on the page is the whole-document one; it has no underline to point at, so skip
+past it.
 
-**POINT AT:** a red underline in the screenplay, then the note beside it.
+**Map of that note, top to bottom.** Everything you point at is in this order,
+so you can find each item without hunting:
+
+| Order | What you see on screen |
+|---|---|
+| 1 | Heading `INT. MARA'S APARTMENT - LATER`, and on its right `Open · writer decides` |
+| 2 | Four coloured chips: Method specificity, Framed as solution, No help-seeking, Repetition |
+| 3 | Four grey rule lines, each ending `Matched: "…"` |
+| 4 | Heading **`Retrieved by Google Agent Search · 6 clauses`**, then six clause rows, each with a square publisher badge (NAA or WHO), the clause text in italics, a jurisdiction tag, the version, and `Open source ↗` |
+| 5 | Heading **`Why the guidance says this · research retrieved by Google Agent Search`**, then three studies, each with a `doi:` link, its finding, and a line starting `For the writer:` |
+| 6 | The link `All records and the studies that disagree →` |
+| 7 | A dashed box beginning `Guidance by jurisdiction: US (5) · GLOBAL (1)` |
+| 8 | The teal box headed `GOOGLE ADK REVIEWER · SUGGESTED ALTERNATIVE, PRESERVES DRAMATIC INTENT`, with five chips underneath it |
+| 9 | Three buttons: Accept note, Dismiss note, Request expert review, and a reason field |
+
+On the **left** of all this sits the screenplay page with the coloured
+underlines.
+
+---
+
+**POINT AT:** the words `exact amount` in the screenplay on the left. They carry
+a red underline and a small triangle.
 **SAY:** **"Here is one note. The underline is what code noticed: an exact amount."**
 
-**POINT AT:** the clause card with the publisher and the "Open source" link.
+**POINT AT:** item 4, the first clause row, sweeping across to `Open source ↗`.
 **SAY:** **"Beside it, the clause it cites. National Action Alliance, twenty nineteen, with a link to the document."**
 
-**POINT AT:** the research panel headed "Why the guidance says this".
-**SAY:** **"Under that, the research. A BMJ meta-analysis: reporting a method was associated with thirty percent more deaths by that method. We include the studies that disagree, too."**
+**POINT AT:** item 5, the third study, `EClinicalMedicine 2021`, and its finding.
+**SAY:** **"Under that, the research behind the guidance. A meta-analysis of fictional portrayals found an eighteen percent increase in suicides."**
 
-**POINT AT:** the teal alternative box and its chips.
+**POINT AT:** item 6, the link reading `All records and the studies that disagree →`.
+**SAY:** **"And we include the studies that disagree."**
+
+**POINT AT:** item 8, the teal box, then run across its five chips.
 **SAY:** **"Then one alternative that keeps the drama. The agent had to pass our own safety filter before it could answer, and Model Armor screened the result."**
+
+The chips read `gemini-2.5-flash`, `filter: passed`, `self-checks: 1`,
+`Agent Engine`, `Model Armor: clear`. Do not read them out; the camera does that
+work for you.
 
 ---
 
@@ -92,8 +121,8 @@ screenplay page.
 Do this **while the first result is still on screen**, so the take needs only
 one long review.
 
-**NAVIGATE:** in any note, click the reason box, type **the ambiguity is the
-point**, and press **Dismiss note**.
+**NAVIGATE:** in the same note, click the reason field at the bottom, type
+**the ambiguity is the point**, and press **Dismiss note**.
 
 **POINT AT:** the state line now reading "dismissed, reasoning stays visible",
 then the clauses and research still sitting below it.
@@ -154,8 +183,8 @@ Stop recording.
 Cut in this order, and only in this order:
 
 1. The last clause of the stack beat: **"One card admits a failure, because we don't paint anything green."** Worth about four seconds.
-2. The research sentence in the note anatomy (0:50–1:30). The panel is still on
-   screen, so a judge sees it without narration.
+2. The two research lines in the note anatomy (0:50–1:30). The panel stays on
+   screen, so a judge reads it without narration.
 3. The `meta.gate` line at 2:07.
 
 **Never cut the contrast beat at 1:45**, and never cut the sentence
