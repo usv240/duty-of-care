@@ -321,7 +321,7 @@ def build_stack(
             "Pressing Export writes the review result to the app's bucket and returns a "
             "link. Nothing is stored unless the writer presses the button; on other hosts "
             "the same route falls back to a temporary local file and says so.",
-            "active" if caps.get("object_storage", {}).get("ok") and caps.get("object_storage", {}).get("backend") != "local_file" else "configured",
+            "active" if caps.get("object_storage", {}).get("proven") else "configured",
             evidence=caps.get("object_storage", {}).get("detail"),
             reference="duty_of_care/replit_platform.py",
         ),

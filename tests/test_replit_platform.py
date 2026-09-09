@@ -151,3 +151,45 @@ async def _fake_integrations() -> dict[str, dict[str, object]]:
         "api_keys": {"ok": False},
         "replit": {"ok": False, "host": None, "deployment": False},
     }
+
+
+def test_app_storage_card_is_earned_by_a_write_not_by_a_client(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Constructing the client proves a library; only a landed write proves a bucket."""
+
+    class Unreachable:
+        backend = "replit_app_storage"
+
+        def put(self, name, text):
+            raise ConnectionError("no bucket")
+
+        def get(self, export_id):
+            return None
+
+    monkeypatch.setenv("REPL_ID", "abc")
+    monkeypatch.setattr(replit_platform, "export_store", lambda: Unreachable())
+    replit_platform._LAST_EXPORT.update(backend=None, note=None)
+    assert replit_platform.capabilities()["object_storage"]["proven"] is False
+
+    export_id, backend, note = replit_platform.put_export("t", "{}")
+    assert backend == "local_file" and "ConnectionError" in note
+    caps = replit_platform.capabilities()["object_storage"]
+    assert caps["proven"] is False
+    assert "stored locally instead" in caps["detail"]
+
+
+def test_app_storage_card_turns_active_after_a_landed_write(monkeypatch: pytest.MonkeyPatch) -> None:
+    class Working:
+        backend = "replit_app_storage"
+
+        def put(self, name, text):
+            return "exp_ok"
+
+        def get(self, export_id):
+            return "{}"
+
+    monkeypatch.setenv("REPL_ID", "abc")
+    monkeypatch.setattr(replit_platform, "export_store", lambda: Working())
+    replit_platform._LAST_EXPORT.update(backend=None, note=None)
+    export_id, backend, note = replit_platform.put_export("t", "{}")
+    assert (export_id, backend, note) == ("exp_ok", "replit_app_storage", None)
+    assert replit_platform.capabilities()["object_storage"]["proven"] is True

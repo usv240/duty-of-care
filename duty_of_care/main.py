@@ -141,6 +141,11 @@ def _identity(request: Request) -> apikeys.ApiKeyIdentity:
             request.headers.get("authorization"), request.headers.get("x-api-key")
         )
     except apikeys.ApiKeyError as exc:
+        if backend_proxy.enabled():
+            # This host proxies to the backend, which issues and signs the keys. A key it
+            # cannot verify is not a bad key, it is simply not this host's to check, so the
+            # caller keeps the anonymous limits here rather than being turned away.
+            return apikeys.ANONYMOUS
         raise _fail(
             401,
             "invalid_api_key",
@@ -290,7 +295,18 @@ async def stack() -> dict[str, object]:
         try:
             remote = (await asyncio.to_thread(_fetch_backend_json, "/v1/stack"))["data"]
             google = [dict(component, evidence=((component.get("evidence") or "") + " (reported by the Cloud Run backend)").strip()) for component in remote["components"] if component["group"] == "google"]
-            payload["components"] = google + [component for component in payload["components"] if component["group"] != "google"]
+            local = [component for component in payload["components"] if component["group"] != "google"]
+            # The Replit Agent build is an owner attestation recorded on the backend; every
+            # other Replit card stays local, because only this process can observe it.
+            upstream_agent = next((c for c in remote["components"] if c["key"] == "replit_agent"), None)
+            if upstream_agent and upstream_agent.get("status") == "active":
+                for index, component in enumerate(local):
+                    if component["key"] == "replit_agent" and component["status"] != "active":
+                        local[index] = dict(
+                            upstream_agent,
+                            evidence=((upstream_agent.get("evidence") or "") + " (attestation recorded on the Cloud Run backend)").strip(),
+                        )
+            payload["components"] = google + local
             payload["backend"] = {"url": _backend_url(), "surface": remote.get("surface")}
         except Exception as exc:  # noqa: BLE001 - shown as unreachable rather than invented
             for component in payload["components"]:
