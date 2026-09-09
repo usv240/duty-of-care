@@ -9,7 +9,7 @@
 </head>
 <body>
   <main id="main">
-    <section class="section shell"><p class="eyebrow">Developers</p><h2>Integrate the pre-review. Mint a key, run it live, ship it.</h2>
+    <section class="section shell"><p class="eyebrow">API</p><h2>Integrate the pre-review. Mint a key, run it live, ship it.</h2>
       <p class="deck" data-mode="plain">Any writing tool, script-coverage service, or production workflow can call the same review this site uses. There is no account: press the button, get a key, and run a live review from this page. Anonymous calls work too, at lower limits.</p>
       <p class="deck" data-mode="technical">Keys are stateless HMAC tokens signed with a secret held in Google Secret Manager, so verification is a signature check with no key store. Every response carries <code>data.disclaimer</code> as a required field and <code>meta.gate</code> with the thresholds that were evaluated. Errors use one envelope: <code>{ ok:false, error:{ code, message, fix, docs } }</code>.</p>
       <div class="steps">

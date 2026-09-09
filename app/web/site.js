@@ -26,7 +26,7 @@
       ['replit_database', 'Database'], ['replit_app_storage', 'App Storage'], ['replit_scheduled', 'Scheduled'], ['replit_secrets', 'Secrets'],
     ],
   };
-  const NAV = [['/', 'Review'], ['/presets', 'Demo library'], ['/evidence', 'Evidence'], ['/developers', 'Developers'], ['/stack', 'Stack']];
+  const NAV = [['/', 'Review'], ['/presets', 'Demo library'], ['/evidence', 'Evidence'], ['/developers', 'API'], ['/stack', 'Stack']];
 
   function buildHeader() {
     const header = el('header', undefined, 'site');

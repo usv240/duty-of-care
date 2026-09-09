@@ -27,7 +27,7 @@ weighted, so each beat is aimed at one of them and labelled.
    product is visible.
 5. **Two tabs only**, in this order:
    - Tab 1: `https://duty-of-care.replit.app/` (guidance case loads by default)
-   - Tab 2: `https://duty-of-care.replit.app/developers`
+   - Tab 2: `https://duty-of-care.replit.app/developers` (labelled **API** in the nav)
 6. **Microphone on, system audio off.** No music. English.
 
 Read at a normal pace, roughly 150 words a minute. The whole script is about
@@ -55,7 +55,7 @@ the box. **Press "Review against published guidance".**
 The progress list ticks for about fifteen seconds. Point at each line as it
 appears; it is your visual aid, so you are never waiting in silence.
 
-**SAY:** **"This is a three-scene draft I wrote. Watch three layers work."**
+**SAY:** **"This is a three-scene draft I wrote. Three layers run."**
 
 **POINT AT:** the first progress line.
 **SAY:** **"First, code finds the exact phrase worth checking. Nothing has judged anything yet."**
@@ -64,7 +64,7 @@ appears; it is your visual aid, so you are never waiting in silence.
 **SAY:** **"Second, Agent Search retrieves only the published guidance that applies, for this jurisdiction, plus the research behind it."**
 
 **POINT AT:** the "Agent Engine, explaining" line.
-**SAY:** **"Third, Gemini, running on Vertex AI Agent Engine, explains that guidance in context. And critically: no applicable source means no note."**
+**SAY:** **"Third, Gemini, running on Vertex AI Agent Engine, explains that guidance in context. If no applicable source comes back, there is no note."**
 
 ---
 
@@ -133,7 +133,7 @@ then the clauses and research still sitting below it.
 
 ---
 
-### 1:45–2:07 — The contrast, and the sentence that lands the whole demo (criterion: Quality of the Idea)
+### 1:45–2:07 — The contrast, and the sentence the demo exists to land (criterion: Quality of the Idea)
 
 **SAY (before you click, as the transition):** **"Now watch what happens when I change the writing, not the topic."**
 
@@ -151,7 +151,7 @@ leave a beat of silence after it.
 
 ### 2:07–2:22 — Where this can live (criteria: Potential Impact + Design)
 
-**NAVIGATE:** Tab 2, the Developers page. Press **"Get an API key now"**, then
+**NAVIGATE:** Tab 2, the API page. Press **"Get an API key now"**, then
 **"Run POST /v1/review"**.
 
 **SAY:** **"And because the same review is an API, this doesn't have to live only here. It can sit inside the writing and production tools creators already use."**
@@ -161,12 +161,12 @@ leave a beat of silence after it.
 
 ---
 
-### 2:22–2:36 — Not a mockup (criterion: Technological Implementation)
+### 2:22–2:36 — Every service reports its own state (criterion: Technological Implementation)
 
 **NAVIGATE:** click **Stack** in the top navigation. One slow scroll through the
 Google group into the Replit group. Do not read the cards aloud.
 
-**SAY:** **"And this isn't a mockup. Every service here reports whether it actually answered this review: Agent Search, Agent Engine, Gemini, Model Armor, and the Replit deployment. One card admits a failure, because we don't paint anything green."**
+**SAY:** **"Every service on this page reports whether it answered this review. Agent Search, Agent Engine, Gemini, Model Armor, and the Replit deployment. One card reads configured rather than active, because its write failed."**
 
 ---
 
@@ -175,7 +175,7 @@ Google group into the Replit group. Do not read the cards aloud.
 **NAVIGATE:** scroll to the bottom so the fixed crisis footer is unmistakable.
 
 **POINT AT:** the footer.
-**SAY:** **"Crisis resources on every page, before anything else. Published guidance beside the scene, and the writer keeps the pen."**
+**SAY:** **"Crisis resources sit on every page. The guidance is beside the scene, and the decision stays with the writer."**
 
 Stop recording.
 
@@ -185,7 +185,7 @@ Stop recording.
 
 Cut in this order, and only in this order:
 
-1. The last clause of the stack beat: **"One card admits a failure, because we don't paint anything green."** Worth about four seconds.
+1. The last clause of the stack beat: **"One card reads configured rather than active, because its write failed."** Worth about four seconds.
 2. The two research lines in the note anatomy (0:50–1:30). The panel stays on
    screen, so a judge reads it without narration.
 3. The `meta.gate` line at 2:07.
@@ -221,5 +221,5 @@ that take. A warm instance answers in ten to fifteen.
 | 1:30 | Dismissal keeps the reasoning; no score | Quality of the Idea |
 | 1:45 | Conforming draft returns zero notes, then the hero sentence | Quality of the Idea |
 | 2:07 | An API, so it can live in existing tools | Potential Impact, Design |
-| 2:22 | Services report whether they actually answered | Technological Implementation |
-| 2:36 | Crisis resources, writer keeps the pen | Potential Impact |
+| 2:22 | Services report whether they answered | Technological Implementation |
+| 2:36 | Crisis resources, the decision stays with the writer | Potential Impact |
