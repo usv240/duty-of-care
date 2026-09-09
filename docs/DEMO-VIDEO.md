@@ -70,9 +70,9 @@ appears; it is your visual aid, so you are never waiting in silence.
 
 ### 0:50–1:30 — Anatomy of one note (criteria: Technological Implementation + Potential Impact)
 
-**Use the second note, headed `INT. MARA'S APARTMENT - LATER`.** The first note
-on the page is the whole-document one; it has no underline to point at, so skip
-past it.
+**Use the first note, headed `INT. MARA'S APARTMENT - LATER`.** Notes arrive in
+scene order, and the note about the whole document comes last, so the richest
+one is the one you land on.
 
 **Map of that note, top to bottom.** Everything you point at is in this order,
 so you can find each item without hunting:

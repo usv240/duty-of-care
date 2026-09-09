@@ -69,9 +69,10 @@ def test_grounded_review_runs_agent_but_writer_owns_decision(monkeypatch):
     data = body["data"]
     scene_flags = [flag for flag in data["grounded_flags"] if not flag["document_level"]]
     document_flags = [flag for flag in data["grounded_flags"] if flag["document_level"]]
+    assert data["grounded_flags"][-1]["document_level"] is True, "the document note reads last"
     assert len(scene_flags) == 1
     assert len(document_flags) == 1  # no resource signpost anywhere in the document
-    assert calls == ["document", "scene-001"]
+    assert calls == ["scene-001", "document"]  # scene notes first, document note last
     assert scene_flags[0]["clauses"][0]["source_url"].startswith("https://")
     assert data["decision_owner"] == "writer"
     assert data["overall_score"] is None

@@ -521,7 +521,13 @@ async def _review(
     configured = bool(os.getenv("VERTEX_SEARCH_DATA_STORE"))
     agent_ok, filter_ok, armor_ok = True, True, True
     if configured:
-        scene_ids = sorted({item.scene_id for item in triggers if item.scene_id in scenes_for_grounding})[:10]
+        # Scene notes first, in scene order, then the whole-document note. A writer
+        # reads the screenplay top to bottom, so the note about a line should arrive
+        # before the note about the file; sorting by id alone put "document" first.
+        scene_ids = sorted(
+            {item.scene_id for item in triggers if item.scene_id in scenes_for_grounding},
+            key=lambda scene_id: (scene_id == DOCUMENT_SCENE_ID, scene_id),
+        )[:10]
 
         async def ground_and_explain(scene_id: str) -> dict[str, object] | None:
             relevant = [item for item in triggers if item.scene_id == scene_id]
