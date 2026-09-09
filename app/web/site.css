@@ -121,8 +121,9 @@ html[data-theme="dark"] .sigil{color:#071512}
 .fineprint details{padding:1rem 1.4rem}.fineprint summary{cursor:pointer;font-weight:700}.fineprint p{margin:.6rem 0 0;font-size:.92rem;color:var(--muted)}
 .evidence{margin:1rem 1.2rem 0;border-top:1px dashed var(--line);padding-top:.9rem}.evrow{font-size:.84rem;margin-bottom:.7rem}.evrow p{margin:.25rem 0 0}.evrow strong{font-size:.86rem}
 /* live panel */
-.live{position:fixed;right:1rem;top:112px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;width:min(360px,calc(100% - 2rem));box-shadow:var(--shadow);z-index:8}
-.live[hidden]{display:none}.live p{margin:.3rem 0;font-size:.88rem}
+/* Named so it cannot collide with a status class: a dot carries class="dot live". */
+.livepanel{position:fixed;right:1rem;top:112px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1rem;width:min(360px,calc(100% - 2rem));box-shadow:var(--shadow);z-index:8}
+.livepanel[hidden]{display:none}.livepanel p{margin:.3rem 0;font-size:.88rem}
 
 /* footer */
 footer.crisis{position:fixed;bottom:0;left:0;right:0;background:#123c37;color:#f6fffc;z-index:6;padding:.8rem 0;box-shadow:0 -8px 28px rgba(0,0,0,.15)}

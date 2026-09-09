@@ -60,6 +60,14 @@ def main() -> int:
                         failures.append(f"{tag} {path}: crisis footer missing")
                     if page.evaluate("document.querySelectorAll('[data-stack-key]').length") < 14:
                         failures.append(f"{tag} {path}: sponsor ribbon incomplete")
+                    # A status dot must stay a dot. It carries class="dot <status>", so any
+                    # bare .<status> rule elsewhere silently repaints it into that element.
+                    oversized = page.evaluate(
+                        "Array.from(document.querySelectorAll('.dot'))"
+                        ".filter(d => d.getBoundingClientRect().width > 20).length"
+                    )
+                    if oversized:
+                        failures.append(f"{tag} {path}: {oversized} status dot(s) rendered oversized")
                     if shots:
                         page.screenshot(path=str(IMG / f"{tag}-{path.strip('/') or 'home'}.png"), full_page=(width == 1280), timeout=20000)
                 if width == 1280:

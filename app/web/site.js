@@ -72,7 +72,7 @@
   }
 
   function buildLivePanel() {
-    const aside = el('aside', undefined, 'live'); aside.dataset.livePanel = ''; aside.hidden = true;
+    const aside = el('aside', undefined, 'livepanel'); aside.dataset.livePanel = ''; aside.hidden = true;
     aside.append(el('strong', 'Live integrations'), el('p', 'Real round trips, cached for one minute.', 'small'));
     const host = el('div', 'Waiting…'); host.dataset.health = '';
     const close = el('button', 'Close'); close.dataset.liveClose = '';
