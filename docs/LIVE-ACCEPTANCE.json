@@ -1,7 +1,7 @@
 {
-  "verified_at": "2026-09-04",
+  "verified_at": "2026-09-08",
   "service": "duty-of-care-agent-backend",
-  "revision": "duty-of-care-agent-backend-00020-2wj (evidence gathered on 00017 through 00020)",
+  "revision": "duty-of-care-agent-backend-00025 (see gcloud for the suffix); evidence gathered on 00017 through 00025",
   "url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
   "agent_engine": "projects/109051079423/locations/us-central1/reasoningEngines/7146145532602220544 (duty-of-care-guidance-reviewer)",
   "model_armor_template": "duty-of-care-agent-output",
@@ -26,17 +26,21 @@
     "secret_manager": "active",
     "cloud_build": "applied",
     "cloud_logging": "active",
-    "replit_agent": "pending",
+    "replit_agent": "active",
     "replit_deployment": "pending",
     "replit_auth": "configured",
     "replit_database": "configured",
     "replit_app_storage": "configured",
     "replit_scheduled": "configured",
-    "replit_secrets": "configured"
+    "replit_secrets": "configured",
+    "vertex_evaluation": "applied",
+    "cloud_monitoring": "active",
+    "artifact_registry": "active"
   },
   "pages": [
     "/",
     "/presets",
+    "/evidence",
     "/developers",
     "/stack"
   ],
@@ -100,9 +104,9 @@
     }
   },
   "offline_suite": {
-    "tests": 53,
+    "tests": 54,
     "ruff": "clean",
-    "visual_check": "passed, 4 pages x 2 widths"
+    "visual_check": "passed, 5 pages x 2 widths"
   },
   "live_pipeline_evaluation": {
     "file": "docs/EVAL-LIVE.json",
@@ -120,12 +124,51 @@
     "fallback_to_in_process": "10 of 34 model-backed cases, recorded per note"
   },
   "claims_not_yet_verified": [
-    "Replit Agent material build evidence",
-    "public Replit deployment",
     "Replit Auth, Database, App Storage, and Scheduled Deployment live on Replit",
     "qualified independent ten-fragment review",
     "public demo video",
     "Devpost submission"
   ],
-  "agent_engine_scaling": "min 1, max 4 instances, container concurrency 4"
+  "agent_engine_scaling": "min 1, max 4 instances, container concurrency 4",
+  "evidence_base": {
+    "records": 14,
+    "store": "duty-of-care-evidence",
+    "verified_against": "Europe PMC on 2026-09-08",
+    "per_note": "up to 3 records retrieved by trigger class; verified live on uk-drama (3 records)"
+  },
+  "agent_quality": {
+    "judge": "Vertex AI Gen AI Evaluation Service",
+    "notes_evaluated": 9,
+    "groundedness_mean": 1.0,
+    "fully_grounded": "9/9",
+    "safety_mean": 1.0,
+    "safe": "9/9",
+    "ran_at": "2026-09-08T23:10Z",
+    "file": "docs/EVAL-GROUNDEDNESS.json"
+  },
+  "cloud_monitoring": {
+    "uptime_check": "duty-of-care-health",
+    "period_seconds": 300,
+    "content_match": "guidance-case on /v1/presets"
+  },
+  "replit_deployment": {
+    "url": "https://duty-of-care.replit.app",
+    "type": "autoscale",
+    "verified": "2026-09-08 23:20-23:25 UTC",
+    "keyed_review_seconds": 28.2,
+    "notes": 3,
+    "agent_runtime": "vertex_ai_agent_engine",
+    "stream_events_seconds": [
+      0.2,
+      0.3,
+      0.4,
+      5.6,
+      5.7
+    ],
+    "pending": [
+      "pull 650f4e0 and republish",
+      "Auth/Database/App Storage activation",
+      "Scheduled Deployment"
+    ]
+  }
 }

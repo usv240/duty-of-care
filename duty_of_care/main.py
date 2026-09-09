@@ -35,7 +35,7 @@ from fastapi.staticfiles import StaticFiles
 from google import genai
 from pydantic import BaseModel, Field, model_validator
 
-from . import apikeys, backend_proxy, model_armor, replit_platform, telemetry
+from . import apikeys, backend_proxy, evidence, model_armor, replit_platform, telemetry
 from .adk_app import agent_engine_resource, explain_grounded_flag
 from .eval import run_benchmark
 from .filters import DISCLAIMER, validate_rendered_text
@@ -70,7 +70,7 @@ _HEALTH: dict[str, object] = {"checked": 0.0, "value": None}
 _LIMITER = SlidingWindow(window_seconds=60)
 BASE_LIMITS = {"review": 6, "keys": 10, "exports": 10, "decisions": 30}
 _LAST_AGENT_RUNTIME: dict[str, str | None] = {"runtime": None, "model_armor": None}
-PAGES = {"/": "index.html", "/presets": "presets.html", "/developers": "developers.html", "/stack": "stack.html"}
+PAGES = {"/": "index.html", "/presets": "presets.html", "/developers": "developers.html", "/stack": "stack.html", "/evidence": "evidence.html"}
 
 
 @app.middleware("http")
@@ -176,12 +176,28 @@ async def _live_integrations() -> dict[str, Any]:
     now = time.monotonic()
     if _HEALTH["value"] and now - float(_HEALTH["checked"]) < 60:
         return dict(_HEALTH["value"])  # type: ignore[arg-type]
+    runtime = replit_platform.runtime()
+    if _backend_url():
+        try:
+            remote = (await asyncio.to_thread(_fetch_backend_json, "/health/integrations"))["data"]["integrations"]
+            google = {key: {**dict(remote.get(key, {"ok": False})), "via": "backend"} for key in ("google_vertex", "agent_search", "google_adk")}
+            backend = {"ok": True, "url": _backend_url()}
+        except Exception as exc:  # noqa: BLE001 - reported, never hidden
+            google = {key: {"ok": False, "detail": f"backend unreachable ({type(exc).__name__})", "via": "backend"} for key in ("google_vertex", "agent_search", "google_adk")}
+            backend = {"ok": False, "url": _backend_url()}
+        value = {
+            **google,
+            "api_keys": {"ok": apikeys.configured()},
+            "replit": {"ok": runtime["on_replit"], "host": runtime["domains"], "deployment": runtime["deployment"]},
+            "backend": backend,
+        }
+        _HEALTH.update(checked=now, value=value)
+        return value
     vertex, search = await asyncio.gather(
         asyncio.to_thread(_vertex_probe),
         asyncio.to_thread(probe_search),
         return_exceptions=True,
     )
-    runtime = replit_platform.runtime()
     value = {
         "google_vertex": vertex if isinstance(vertex, dict) else {"ok": False, "detail": type(vertex).__name__},
         "agent_search": search if isinstance(search, dict) else {"ok": False, "detail": str(search)[:360]},
@@ -198,6 +214,26 @@ async def _live_integrations() -> dict[str, Any]:
 
 def _corpus_version() -> str:
     return replit_platform.corpus_version(CORPUS)
+
+
+def _backend_url() -> str | None:
+    """The Google backend this host proxies to, when this host has no Google credentials.
+
+    On Replit the Google services are answered by Cloud Run, so health and stack
+    for the Google group are read from the backend and labelled as such; the
+    Replit group is always computed locally, because only this process knows it.
+    """
+    url = os.getenv("DUTY_OF_CARE_BACKEND_URL")
+    if url and not os.getenv("VERTEX_SEARCH_DATA_STORE"):
+        return url.rstrip("/")
+    return None
+
+
+def _fetch_backend_json(path: str) -> dict[str, Any]:
+    import urllib.request
+
+    with urllib.request.urlopen(f"{_backend_url()}{path}", timeout=90) as response:  # noqa: S310 - fixed, allowlisted origin
+        return json.loads(response.read().decode("utf-8"))
 
 
 # ------------------------------------------------------------------ pages ----
@@ -245,7 +281,26 @@ async def stack() -> dict[str, object]:
         model=MODEL,
         agent_engine={"resource": agent_engine_resource(), "last_runtime": _LAST_AGENT_RUNTIME["runtime"]},
         model_armor={"template": model_armor.template_name(), "last_status": _LAST_AGENT_RUNTIME["model_armor"]},
+        evidence_store=evidence.configured(),
+        agent_quality=run_benchmark(ROOT).get("agent_quality"),
     )
+    if _backend_url():
+        # The Google group is the backend's own live view; only the Replit and app
+        # groups are this host's to report.
+        try:
+            remote = (await asyncio.to_thread(_fetch_backend_json, "/v1/stack"))["data"]
+            google = [dict(component, evidence=((component.get("evidence") or "") + " (reported by the Cloud Run backend)").strip()) for component in remote["components"] if component["group"] == "google"]
+            payload["components"] = google + [component for component in payload["components"] if component["group"] != "google"]
+            payload["backend"] = {"url": _backend_url(), "surface": remote.get("surface")}
+        except Exception as exc:  # noqa: BLE001 - shown as unreachable rather than invented
+            for component in payload["components"]:
+                if component["group"] == "google":
+                    component["status"] = "unreachable"
+                    component["evidence"] = f"backend unreachable ({type(exc).__name__})"
+        payload["summary"] = {
+            state: sum(1 for c in payload["components"] if c["status"] == state)
+            for state in ("live", "active", "configured", "applied", "pending", "unreachable")
+        }
     payload["timing"] = {"query_ms": round((time.perf_counter() - started) * 1000, 1)}
     return {"data": payload, "disclaimer": validate_rendered_text(DISCLAIMER)}
 
@@ -355,6 +410,23 @@ def guidance() -> dict[str, object]:
     }
 
 
+@app.get("/v1/evidence")
+def evidence_base() -> dict[str, object]:
+    """The research behind the guidance: verified citations, findings, and trigger-class mapping."""
+    loaded = evidence.local_records()
+    return {
+        "data": {
+            "records": loaded["records"],
+            "count": len(loaded["records"]),
+            "verified_on": loaded["verified_on"],
+            "verified_against": loaded["verified_against"],
+            "evidence_version": replit_platform.corpus_version(evidence.EVIDENCE_PATH),
+            "retrieval": "google_agent_search" if evidence.configured() else "not_configured_on_this_host",
+        },
+        "disclaimer": validate_rendered_text(DISCLAIMER),
+    }
+
+
 @app.get("/v1/eval/latest")
 def eval_latest() -> dict[str, object]:
     """The deterministic-layer benchmark, computed live from the shipped cases."""
@@ -440,7 +512,13 @@ async def _review(
             await progress({"event": "retrieved", "scene_id": scene_id, "clause_count": len(clauses), "publishers": sorted({c.publisher for c in clauses})})
             if not clauses:
                 return None
-            await progress({"event": "explaining", "scene_id": scene_id, "runtime": "vertex_ai_agent_engine" if agent_engine_resource() else "adk_in_process"})
+            # Research behind the guidance, from the second Agent Search store. Supplementary:
+            # a retrieval failure here leaves the note intact rather than failing the review.
+            try:
+                research = await asyncio.to_thread(evidence.evidence_for, [item.trigger_class for item in relevant])
+            except Exception:  # noqa: BLE001 - recorded as empty; the clauses are the decision, not this
+                research = []
+            await progress({"event": "explaining", "scene_id": scene_id, "runtime": "vertex_ai_agent_engine" if agent_engine_resource() else "adk_in_process", "evidence": len(research)})
             try:
                 explanation = await explain_grounded_flag(
                     scene,
@@ -480,6 +558,7 @@ async def _review(
                 "clauses": clause_dicts,
                 "jurisdictions": by_jurisdiction,
                 "divergence": divergence,
+                "evidence": research,
                 "agent": explanation,
                 "state": "open",
             }
@@ -716,21 +795,20 @@ async def create_export(body: ExportBody, request: Request) -> dict[str, object]
     _limited(request, "exports")
     if "disclaimer" not in body.review:
         raise _fail(422, "disclaimer_required", "An export must carry data.disclaimer.", "Send the review payload exactly as /v1/review returned it.")
-    store = replit_platform.export_store()
     payload = json.dumps(
         {"title": body.title, "exported_at": replit_platform.now_iso(), "review": body.review, "meta": body.meta},
         indent=2,
     )
-    export_id = store.put(body.title, payload)
+    export_id, backend, note = replit_platform.put_export(body.title, payload)
     return {
         "ok": True,
-        "data": {"export_id": export_id, "url": f"/v1/exports/{export_id}", "backend": store.backend, "bytes": len(payload)},
+        "data": {"export_id": export_id, "url": f"/v1/exports/{export_id}", "backend": backend, "note": note, "bytes": len(payload)},
     }
 
 
 @app.get("/v1/exports/{export_id}")
 async def get_export(export_id: str) -> Response:
-    text = replit_platform.export_store().get(export_id)
+    text = replit_platform.get_export(export_id)
     if text is None:
         raise _fail(404, "export_not_found", "No export with that id on this host.", "Exports on Cloud Run are ephemeral; on Replit they live in App Storage.")
     return Response(

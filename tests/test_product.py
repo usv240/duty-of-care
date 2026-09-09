@@ -6,7 +6,7 @@ from duty_of_care.models import GuidanceClause
 
 def test_every_page_is_light_by_default_and_keeps_resources_visible():
     client = TestClient(app)
-    for path in ("/", "/presets", "/developers", "/stack"):
+    for path in ("/", "/presets", "/developers", "/stack", "/evidence"):
         response = client.get(path)
         assert response.status_code == 200, path
         assert "call or text 988" in response.text, path

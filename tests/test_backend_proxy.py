@@ -42,7 +42,7 @@ def proxy_client(monkeypatch: pytest.MonkeyPatch):
         assert request.headers["accept-encoding"] == "identity"
         if request.url.path == "/v1/presets":
             return httpx.Response(307, headers={"location": "https://evil.example"})
-        if request.url.path == "/health":
+        if request.url.path == "/v1/resources":
             return httpx.Response(
                 200,
                 headers={"content-type": "application/json", "content-encoding": "gzip"},
@@ -84,10 +84,10 @@ def proxy_client(monkeypatch: pytest.MonkeyPatch):
 
 def test_exact_allowlist_uses_only_fixed_origin(proxy_client) -> None:
     client, seen = proxy_client
-    response = client.get("/v1/resources?region=US")
+    response = client.get("/v1/guidance?region=US")
     assert response.status_code == 200
     assert response.json()["proxied"] is True
-    assert str(seen[0].url) == "https://backend.example/v1/resources?region=US"
+    assert str(seen[0].url) == "https://backend.example/v1/guidance?region=US"
     assert "x-upstream-secret" not in response.headers
 
     # Writer identity and persistence endpoints always remain on this app.
@@ -107,7 +107,7 @@ def test_stream_is_proxied_without_forwarding_unsafe_headers(proxy_client) -> No
 
 def test_compressed_buffered_response_remains_usable(proxy_client) -> None:
     client, seen = proxy_client
-    response = client.get("/health")
+    response = client.get("/v1/resources")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
     assert response.headers["content-encoding"] == "gzip"
@@ -132,7 +132,7 @@ def test_non_allowlisted_method_stays_local(proxy_client) -> None:
 def test_invalid_backend_origin_fails_closed(proxy_client, monkeypatch) -> None:
     client, seen = proxy_client
     monkeypatch.setenv("DUTY_OF_CARE_BACKEND_URL", "https://backend.example/attacker-path")
-    response = client.get("/health")
+    response = client.get("/v1/resources")
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "backend_proxy_not_configured"
     assert seen == []

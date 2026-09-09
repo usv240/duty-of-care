@@ -23,7 +23,6 @@ TOTAL_TIMEOUT_SECONDS = 120.0
 STREAM_ERROR_RESERVE_BYTES = 512
 
 ALLOWED: dict[str, frozenset[str]] = {
-    "/health": frozenset({"GET"}),
     "/v1/resources": frozenset({"GET"}),
     "/v1/guidance": frozenset({"GET"}),
     "/v1/presets": frozenset({"GET"}),
@@ -32,7 +31,6 @@ ALLOWED: dict[str, frozenset[str]] = {
     "/v1/review/stream": frozenset({"POST"}),
     "/v1/report": frozenset({"POST"}),
     "/v1/eval/latest": frozenset({"GET"}),
-    "/v1/stack": frozenset({"GET"}),
     "/v1/keys": frozenset({"POST"}),
 }
 

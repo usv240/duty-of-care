@@ -50,8 +50,9 @@ present-but-broken key is a `401 invalid_api_key`; no key is never an error.
 | `GET /v1/presets` · `GET /v1/presets/{id}` · `GET /v1/presets/{id}/download?format=fountain\|txt\|json` | The six self-authored demo drafts. |
 | `GET /v1/samples` | The two original samples, kept for older clients. |
 | `GET /v1/guidance` | The approved corpus with provenance and `corpus_version`. |
+| `GET /v1/evidence` | The research behind the guidance: 14 records verified against Europe PMC, each with DOI, PMID, finding, writer-facing relevance, and trigger classes. The same records appear per note as `grounded_flags[].evidence` (up to three, retrieved from a second Agent Search store). |
 | `GET /v1/resources?region=` | Region-aware support resources. |
-| `GET /v1/eval/latest` | Deterministic-layer benchmark computed live from the 48 shipped cases with failures listed, plus the published live-pipeline evaluation from `docs/EVAL-LIVE.json`. |
+| `GET /v1/eval/latest` | Deterministic-layer benchmark computed live from the 48 shipped cases with failures listed, the published live-pipeline evaluation from `docs/EVAL-LIVE.json`, and the Vertex AI Gen AI Evaluation Service groundedness and safety scores from `docs/EVAL-GROUNDEDNESS.json`. |
 | `POST /v1/keys` · `GET /v1/keys/self` | Mint a key; inspect the identity and limits of the key you send. |
 | `GET /v1/stack` · `GET /health` · `GET /health/integrations` | Which Google Cloud and Replit services are answering now, with evidence. |
 | `POST /v1/exports` · `GET /v1/exports/{id}` | Store a review only when asked. Replit App Storage on Replit; a temporary file elsewhere. |
@@ -74,6 +75,8 @@ present-but-broken key is a `401 invalid_api_key`; no key is never an error.
                         "clause": "…", "source_url": "https://…", "version": "2019"}],
                         "jurisdictions": {"US": ["naa-method-detail-2019"], "GLOBAL": ["who-accuracy-2019"]},
                         "divergence": [{"trigger_class": "method_specificity", "jurisdictions": ["GLOBAL", "US"]}],
+                        "evidence": [{"record_id": "niederkrotenthaler-2020-bmj-meta", "title": "…", "journal": "BMJ", "year": 2020,
+                                      "doi": "10.1136/bmj.m575", "pmid": "32188637", "finding": "…", "relevance": "…"}],
                         "agent": {"model": "gemini-2.5-flash", "safety_filter": "passed",
                                   "runtime": "vertex_ai_agent_engine",
                                   "safety_settings": {"dangerous_content": "BLOCK_ONLY_HIGH", "...": "..."},

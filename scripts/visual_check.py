@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 IMG = ROOT / "docs" / "img"
-PAGES = ("/", "/presets", "/developers", "/stack")
+PAGES = ("/", "/presets", "/developers", "/stack", "/evidence")
 PORT = int(os.getenv("VISUAL_CHECK_PORT", "8791"))
 
 

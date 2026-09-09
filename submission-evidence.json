@@ -3,29 +3,106 @@
   "project": "Duty of Care",
   "track": "Replit",
   "audited": "2026-09-04",
-  "public_url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
-  "public_url_role": "Google agent backend and functional fallback; not the Replit deployment",
+  "public_url": "https://duty-of-care.replit.app",
+  "public_url_role": "Replit Autoscale deployment (the hosted project for judging); the Google agent backend is https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
   "repository": "https://github.com/usv240/duty-of-care",
   "license": "Apache-2.0",
   "google_runtime": {
     "status": "verified",
-    "technologies": ["Gemini on Vertex AI", "Google ADK", "Vertex AI Agent Engine", "Google Agent Search", "Model Armor", "Cloud Run", "Secret Manager", "Cloud Build", "Cloud Logging"],
-    "evidence": ["/health", "/v1/stack", "docs/LIVE-ACCEPTANCE.json"]
+    "technologies": [
+      "Gemini on Vertex AI",
+      "Google ADK",
+      "Vertex AI Agent Engine",
+      "Google Agent Search (guidance and evidence stores)",
+      "Model Armor",
+      "Vertex AI Gen AI Evaluation Service",
+      "Cloud Run",
+      "Artifact Registry",
+      "Secret Manager",
+      "Cloud Build",
+      "Cloud Logging",
+      "Cloud Monitoring"
+    ],
+    "evidence": [
+      "/health",
+      "/v1/stack",
+      "docs/LIVE-ACCEPTANCE.json"
+    ]
   },
   "product": {
-    "pages": ["/", "/presets", "/developers", "/stack"],
+    "pages": [
+      "/",
+      "/presets",
+      "/evidence",
+      "/developers",
+      "/stack"
+    ],
     "presets": 6,
-    "downloads": ["fountain", "txt", "json", "review json", "review markdown", "explicit export"],
-    "bring_your_own": ["paste", ".fountain", ".txt", ".md", ".fdx (browser-parsed)"],
-    "api": {"keys": "POST /v1/keys, stateless HMAC, secret in Secret Manager", "review": "POST /v1/review with meta.gate", "docs": "/docs, docs/API.md"}
+    "downloads": [
+      "fountain",
+      "txt",
+      "json",
+      "review json",
+      "review markdown",
+      "explicit export"
+    ],
+    "bring_your_own": [
+      "paste",
+      ".fountain",
+      ".txt",
+      ".md",
+      ".fdx (browser-parsed)"
+    ],
+    "api": {
+      "keys": "POST /v1/keys, stateless HMAC, secret in Secret Manager",
+      "review": "POST /v1/review with meta.gate",
+      "docs": "/docs, docs/API.md"
+    }
   },
-  "partner_development": {"status": "blocked_external", "technology": "Replit Agent", "procedure": "replit.md", "status_source": "DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL + DUTY_OF_CARE_REPLIT_AGENT_COMMIT"},
-  "partner_hosting": {"status": "blocked_external", "required_domain": "replit.app or replit.dev", "config": ".replit (autoscale)"},
-  "partner_services_in_code": {"auth": "duty_of_care/replit_platform.py", "database": "duty_of_care/replit_platform.py", "app_storage": "duty_of_care/replit_platform.py", "scheduled": "scripts/scheduled_recheck.py", "status": "adapters shipped with labelled local fallbacks; live verification on Replit pending"},
-  "judge_contrast": {"positive": "guidance-case: deterministic triggers plus source-linked clauses in three notes including a document-level signpost note", "control": "responsible-depiction: zero candidates and zero notes"},
-  "evaluation": {"deterministic_layer": "/v1/eval/latest (48 CC0 cases, failures listed)", "live_pipeline": "docs/EVAL-LIVE.json via scripts/live_eval.py", "independent_review": "pending; evaluation/expert-review-set.json"},
+  "partner_development": {
+    "status": "verified",
+    "technology": "Replit Agent",
+    "commits": [
+      "21d70efc45c00b86312d98a725fc4c3e63c877ef",
+      "077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d"
+    ],
+    "evidence": "docs/REPLIT-BUILD-EVIDENCE.md",
+    "status_source": "DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL + DUTY_OF_CARE_REPLIT_AGENT_COMMIT"
+  },
+  "partner_hosting": {
+    "status": "verified",
+    "url": "https://duty-of-care.replit.app",
+    "deployment": "autoscale",
+    "verified": "2026-09-08 signed-out, desktop and phone"
+  },
+  "partner_services_in_code": {
+    "auth": "duty_of_care/replit_platform.py",
+    "database": "duty_of_care/replit_platform.py",
+    "app_storage": "duty_of_care/replit_platform.py",
+    "scheduled": "scripts/scheduled_recheck.py",
+    "status": "adapters shipped with labelled local fallbacks; live verification on Replit pending"
+  },
+  "judge_contrast": {
+    "positive": "guidance-case: deterministic triggers plus source-linked clauses in three notes including a document-level signpost note",
+    "control": "responsible-depiction: zero candidates and zero notes"
+  },
+  "evaluation": {
+    "deterministic_layer": "/v1/eval/latest (48 CC0 cases, failures listed)",
+    "live_pipeline": "docs/EVAL-LIVE.json via scripts/live_eval.py",
+    "independent_review": "pending; evaluation/expert-review-set.json"
+  },
   "decision_owner": "writer",
-  "claims_excluded": ["clinical safety", "certification", "censorship authority", "expert validation before completion", "Replit track completion"],
-  "submission_video": {"status": "pending_external"},
-  "devpost": {"status": "pending_external"}
+  "claims_excluded": [
+    "clinical safety",
+    "certification",
+    "censorship authority",
+    "expert validation before completion",
+    "Replit Auth, Database, App Storage, Scheduled Deployment as active until verified on the deployment"
+  ],
+  "submission_video": {
+    "status": "pending_external"
+  },
+  "devpost": {
+    "status": "pending_external"
+  }
 }

@@ -19,14 +19,14 @@
   const RIBBON = {
     google: [
       ['gemini', 'Gemini on Vertex AI'], ['adk', 'ADK'], ['agent_engine', 'Agent Engine'], ['agent_search', 'Agent Search'], ['model_armor', 'Model Armor'],
-      ['cloudrun', 'Cloud Run'], ['secret_manager', 'Secret Manager'], ['cloud_build', 'Cloud Build'], ['cloud_logging', 'Cloud Logging'],
+      ['vertex_evaluation', 'Gen AI Evaluation'], ['cloudrun', 'Cloud Run'], ['artifact_registry', 'Artifact Registry'], ['secret_manager', 'Secret Manager'], ['cloud_build', 'Cloud Build'], ['cloud_logging', 'Cloud Logging'], ['cloud_monitoring', 'Monitoring'],
     ],
     partner: [
       ['replit_agent', 'Agent'], ['replit_deployment', 'Autoscale'], ['replit_auth', 'Auth'],
       ['replit_database', 'Database'], ['replit_app_storage', 'App Storage'], ['replit_scheduled', 'Scheduled'], ['replit_secrets', 'Secrets'],
     ],
   };
-  const NAV = [['/', 'Review'], ['/presets', 'Demo library'], ['/developers', 'Developers'], ['/stack', 'Stack']];
+  const NAV = [['/', 'Review'], ['/presets', 'Demo library'], ['/evidence', 'Evidence'], ['/developers', 'Developers'], ['/stack', 'Stack']];
 
   function buildHeader() {
     const header = el('header', undefined, 'site');
