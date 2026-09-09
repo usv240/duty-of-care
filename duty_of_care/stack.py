@@ -198,7 +198,7 @@ def build_stack(
             "proves the app, not just the load balancer, answered.",
             "active",
             evidence="uptime check duty-of-care-health, 300 s period, content match",
-            reference="docs/AUDIT-2026-09-04.md",
+            reference="infra/provision_monitoring.py",
         ),
         _entry(
             "artifact_registry",
@@ -244,7 +244,7 @@ def build_stack(
             "Ruff and the pytest suite run in a python:3.12 step with Cloud Logging output; "
             "the Cloud Run deploy builds the container from source.",
             "applied",
-            evidence="cloudbuild.ci.yaml; build id recorded in STATUS.md",
+            evidence="cloudbuild.ci.yaml runs Ruff, pytest and the browser check",
             reference="cloudbuild.ci.yaml",
         ),
         _entry(
