@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-09-08",
+  "verified_at": "2026-09-09",
   "service": "duty-of-care-agent-backend",
   "revision": "duty-of-care-agent-backend-00025 (see gcloud for the suffix); evidence gathered on 00017 through 00025",
   "url": "https://duty-of-care-agent-backend-109051079423.us-central1.run.app",
@@ -124,7 +124,9 @@
     "fallback_to_in_process": "10 of 34 model-backed cases, recorded per note"
   },
   "claims_not_yet_verified": [
-    "Replit Auth, Database, App Storage, and Scheduled Deployment live on Replit",
+    "Replit App Storage write (no bucket attached)",
+    "Replit Scheduled Deployment run",
+    "signed-in Replit Auth capture",
     "qualified independent ten-fragment review",
     "public demo video",
     "Devpost submission"
@@ -154,21 +156,32 @@
   "replit_deployment": {
     "url": "https://duty-of-care.replit.app",
     "type": "autoscale",
-    "verified": "2026-09-08 23:20-23:25 UTC",
-    "keyed_review_seconds": 28.2,
-    "notes": 3,
-    "agent_runtime": "vertex_ai_agent_engine",
-    "stream_events_seconds": [
-      0.2,
-      0.3,
-      0.4,
-      5.6,
-      5.7
-    ],
-    "pending": [
-      "pull 650f4e0 and republish",
-      "Auth/Database/App Storage activation",
-      "Scheduled Deployment"
-    ]
+    "commit": "d20ef1c",
+    "verified": "2026-09-09 signed-out, desktop 1280 and phone 390, no console errors",
+    "surface_reported": "replit",
+    "ribbon_tools": 19,
+    "review_seconds": {
+      "guidance_case": 14.8,
+      "own_text_us": 12.4,
+      "own_text_gb": 8.8,
+      "own_text_au": 9.4
+    },
+    "stream_events_seconds": {
+      "parsed": 0.2,
+      "retrieved": 0.6,
+      "explained": 12.6,
+      "result": 12.6
+    },
+    "services": {
+      "replit_agent": "active",
+      "replit_deployment": "active",
+      "replit_auth": "active",
+      "replit_database": "active",
+      "replit_secrets": "active",
+      "replit_app_storage": "configured (write fails with ConnectionError; no bucket)",
+      "replit_scheduled": "configured (no run yet)"
+    },
+    "key_flow": "mint then inspect returns 200, tier keyed, 30 reviews/min",
+    "dismissal": "state reads dismissed, 6 clause links and 3 research rows remain visible"
   }
 }

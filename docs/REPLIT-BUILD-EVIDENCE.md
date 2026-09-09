@@ -4,10 +4,10 @@ Filled 2026-09-08 from the owner's session driving the official Replit MCP
 server (`https://replit-mcp.com/server/mcp`). Every line below is backed by the
 workspace git log, an Agent answer, a Cloud Run revision, or an HTTP response.
 Lines that could not be backed say so explicitly. **Both mandatory Replit items
-now exist**: the Agent build (below) and a public Autoscale deployment at
-`https://duty-of-care.replit.app`, first published by the owner from the Replit
-website on 2026-09-08 and verified signed-out the same evening. Items still open
-are quality and completeness, not eligibility.
+are complete and verified**: the Agent build (below) and a public Autoscale
+deployment at `https://duty-of-care.replit.app`, verified signed-out on
+2026-09-09 at desktop and phone widths with no console errors. Items still open
+are optional service activation, not eligibility.
 
 ## Replit Agent
 
@@ -118,57 +118,71 @@ DUTY_OF_CARE_REPLIT_AGENT_COMMIT=077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d
 ## Replit deployment
 
 - Public URL: **https://duty-of-care.replit.app** (Autoscale). First published by the owner from the
-  Replit website on 2026-09-08; `GET /v1/me` on that URL returns
-  `runtime.on_replit: true`, `deployment: true`, `domains: duty-of-care.replit.app`,
-  `surface: replit`, which only a Replit deployment can report.
-- Deployment type: Autoscale, run command `uvicorn duty_of_care.main:app --host 0.0.0.0 --port 8080`.
-- Secrets set on Replit: `DUTY_OF_CARE_BACKEND_URL` and `DUTY_OF_CARE_API_KEY_SECRET`
-  (keys mint on the Replit URL: `POST /v1/keys` returned a key and a keyed review
-  succeeded, which proves the signing secret is present). The two evidence
-  variables were requested at publish time; not yet confirmed from the deployment.
-  No Google service-account key anywhere on Replit.
-- Proxy to the Google backend: working. A keyed `POST /v1/review` on the Replit
-  URL for the guidance case returned 3 grounded notes in 28.2 s with
-  `meta.agent_runtime: ["vertex_ai_agent_engine"]`, Model Armor screened, and 3
-  research records per note; `/v1/review/stream` delivered progress events at
-  0.2, 0.3, 0.4, 5.6, 5.7 s and then the result; the control preset returned
-  `no_candidates`; Markdown report and preset downloads served.
-- Replit Auth: not verified while signed in. `/v1/me` signed out reports
-  `signed_in: false`; `/v1/decisions` returns `401 sign_in_required` as designed.
-- Replit Database: not verified from the deployment (the proxied `/health`
-  reported the backend's view, see below).
-- Replit App Storage: `POST /v1/exports` on the Replit URL returned 500 at
-  23:23 UTC, consistent with no bucket attached; commit `650f4e0` makes the
-  route fall back to a local file and state the reason. Verify after republish.
-- Scheduled Deployment: not created yet. Command: `python -m scripts.scheduled_recheck`, nightly.
+  Replit website on 2026-09-08 and redeployed on 2026-09-09 at commit
+  `d20ef1c`, which merged the workspace's Agent-authored proxy with the
+  repository's evidence base and two-surface reporting.
+- Proof it is a Replit deployment, not the backend: `GET /health` returns
+  `product_surface: replit`; `GET /v1/me` returns `runtime.on_replit: true`,
+  `deployment: true`, `domains: duty-of-care.replit.app`; `GET /v1/stack`
+  returns `surface: replit` and `replit_deployment: active` with the evidence
+  string "serving from duty-of-care.replit.app".
+- Architecture on the deployment: Agent's fixed-origin proxy forwards exactly
+  ten allowlisted route-and-method pairs to `DUTY_OF_CARE_BACKEND_URL`
+  (`/v1/resources`, `/v1/guidance`, `/v1/presets`, `/v1/samples`,
+  `/v1/eval/latest` as GET; `/v1/review`, `/v1/review/stream`, `/v1/report`,
+  `/v1/keys` as POST; `/v1/keys/self` as GET). `/health`, `/v1/stack`,
+  `/v1/evidence`, `/v1/me`, `/v1/decisions` and `/v1/exports` are answered by
+  the Replit app itself, so the deployment reports its own surface and the
+  backend's live Google view side by side.
+- Secrets on Replit: `DUTY_OF_CARE_BACKEND_URL` and
+  `DUTY_OF_CARE_API_KEY_SECRET` (proved by a mint-then-inspect round trip on
+  the Replit URL). No Google service-account key anywhere on Replit.
 
-## Signed-out verification (2026-09-08, 23:20-23:25 UTC, headless Chromium, 1280 and 390 px)
+### Replit services, as the deployment reports them
 
-| Check | Desktop | Mobile | Time (UTC) |
-|---|---|---|---|
-| `/` loads light, ribbon present | pass (16 tools; 19 after the pending pull) | pass | 23:22 |
-| Guidance case returns cited clauses and an ADK explanation | pass: 3 notes, 5 underlines, Agent Engine runtime | not run | 23:23 |
-| Responsible depiction returns zero notes | pass (`no_candidates`, 0.2 s) | not run | 23:23 |
-| Dismissal keeps reasoning visible | pass: decision record shows the reason | not run | 23:23 |
-| `/developers` mints a key and runs live | pass: "3 guidance note(s), 8 candidate(s)" | not run | 23:24 |
-| `/presets` downloads work | pass (`uk-drama.fountain` attachment) | pass | 23:22 |
-| `/stack` shows Replit Agent active | pass (Agent active); Autoscale showed pending because the deployed code still proxied `/v1/stack` to the backend; fixed in `650f4e0`, pending pull and republish | same | 23:22 |
-| Crisis footer visible on every page | pass on `/`, `/presets`, `/developers`, `/stack`; `/evidence` was 404 on the deployed code (page added after Agent's build; pending pull) | same | 23:22 |
-| `/health` reports `product_surface: replit` | not yet: `/health` was proxied to the backend and reported `cloud_run_fallback`; `650f4e0` reads the Google group from the backend and reports the Replit surface locally; pending pull and republish | same | 23:22 |
-| No console errors | two 404s, both from `/evidence` assets not present in the deployed code | same | 23:22 |
+| Service | Status on `/v1/stack` | Evidence |
+|---|---|---|
+| Replit Agent | active | commit `077ca7e87a39`, attestation recorded on the Cloud Run backend |
+| Autoscale Deployment | active | serving from duty-of-care.replit.app |
+| Replit Auth | active | Replit Auth headers are trusted on this host; `/v1/decisions` returns `401 sign_in_required` when signed out |
+| Replit Database | active | managed Postgres via `DATABASE_URL` |
+| Replit Secrets | active | backend URL and signing secret present |
+| App Storage | configured | client selected, but a real write fails with `ConnectionError`, so the card refuses to claim active; the export falls back to a local file and says so |
+| Scheduled Deployment | configured | no scheduled re-check has run on this host yet |
+
+## Signed-out verification (2026-09-09, 01:25-01:40 UTC-4, headless Chromium)
+
+| Check | Desktop 1280px | Mobile 390px |
+|---|---|---|
+| `/`, `/presets`, `/evidence`, `/developers`, `/stack` load light, no horizontal overflow | pass | pass |
+| Sponsor ribbon on every page (19 tools) | pass | pass |
+| Crisis footer on every page | pass | pass |
+| Guidance case returns cited clauses and an ADK explanation | pass: 3 notes, 5 underlines, 15 source links, 3 research panels | pass: same counts |
+| Research retrieved beside each note | pass: 3 records per note | pass |
+| Dismissal keeps reasoning visible | pass: state reads "dismissed, reasoning stays visible"; 6 clause links and 3 research rows remain; decision record names the reason | pass |
+| Responsible depiction returns zero notes | pass: `no_candidates` in 0.2 s | not re-run |
+| Bring your own text, US / GB / AU | pass: 2 notes each in 8.8-12.4 s, jurisdictions correct per region, Agent Engine runtime | not re-run |
+| `/developers` mints a key and runs live | pass: "Complete, 3 guidance note(s), 8 candidate(s)" | not re-run |
+| Mint then inspect a key | pass: 200, tier keyed, 30 reviews/min | not re-run |
+| `/presets` downloads (6 presets, 18 downloads) | pass | pass |
+| Streaming progress events | pass: parsed 0.2 s, retrieved 0.6 s, explained 12.6 s, result 12.6 s | not re-run |
+| Plain/Technical toggle | pass: switches register, plain deck hidden | not re-run |
+| Opt-in dark toggle | pass: light `rgb(246,243,236)` to dark `rgb(16,25,22)` and back | not re-run |
+| Live stack panel | pass: Vertex, Agent Search, ADK, API keys, Replit all available | not re-run |
+| `/health` reports `product_surface: replit` | pass | pass |
+| Console errors | none | none |
+| `/v1/eval/latest` serves the published numbers | pass: precision 1.0, recall 1.0, 54-case live run with 0 errors, judge 9 notes at groundedness 1.0 and safety 1.0 | not re-run |
 
 ## Still open
 
-- Pull `main` (`650f4e0`) into the workspace, push the workspace commits
-  (`21d70efc`, `077ca7e8`) to GitHub, remove `/health` and `/v1/stack` from the
-  proxy allowlist and add `/v1/evidence`, then republish so the Replit URL
-  reports its own surface and serves the Evidence page.
-- Add `DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL` and `DUTY_OF_CARE_REPLIT_AGENT_COMMIT`
-  as Replit Secrets if not already included in the deployment.
-- Enable Replit Auth, Replit Database (Postgres), and App Storage in the
-  workspace; create the nightly Scheduled Deployment; then verify `/v1/me` signed
-  in, `/v1/decisions` backend, `/v1/exports` backend.
-- Re-run the mobile column for the review flow after republish.
+- App Storage has no reachable bucket from the deployment; attach one in the
+  workspace if the card should read active. The product works either way: the
+  export lands in a local file and the response says which backend held it.
+- No Scheduled Deployment yet. Command when created:
+  `python -m scripts.scheduled_recheck`, nightly.
+- Replit Auth is active but no signed-in `/v1/me` capture was taken.
+- Qualified independent review of the blinded ten-fragment pack remains
+  pending, and the product reports it as pending.
 
 Do not mark the Replit requirement passed until every mandatory track item in
 `Rules.md` and the public deployment have been independently checked.
