@@ -82,3 +82,38 @@ def test_export_falls_back_when_primary_store_fails(monkeypatch: pytest.MonkeyPa
     assert created["backend"] == "local_file"
     assert "replit_app_storage failed" in created["note"]
     assert client.get(created["url"]).status_code == 200
+
+
+def test_a_backend_key_is_anonymous_here_not_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keys are the backend's to verify; a local route must not turn one away."""
+    monkeypatch.setenv("DUTY_OF_CARE_API_KEY_SECRET", "a-different-local-secret")
+    response = TestClient(app).post(
+        "/v1/exports",
+        json={"title": "t", "review": {"disclaimer": "d"}, "meta": {}},
+        headers={"Authorization": "Bearer doc_deadbeefdeadbeef_1788900000_" + "0" * 32},
+    )
+    assert response.status_code == 200
+
+
+def test_keys_self_is_proxied_to_the_issuer() -> None:
+    from duty_of_care import backend_proxy
+
+    assert backend_proxy.ALLOWED["/v1/keys/self"] == frozenset({"GET"})
+    assert backend_proxy.ALLOWED["/v1/keys"] == frozenset({"POST"})
+
+
+def test_agent_attestation_is_carried_from_the_backend(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fake_fetch(path: str):
+        if path == "/health/integrations":
+            return {"data": {"integrations": {"google_vertex": {"ok": True}, "agent_search": {"ok": True}, "google_adk": {"ok": True}}}}
+        return {"data": {"surface": "cloud_run", "components": [
+            {"key": "gemini", "group": "google", "status": "live", "evidence": "probe"},
+            {"key": "replit_agent", "group": "partner", "status": "active", "evidence": "Agent-authored commit 077ca7e87a39"},
+        ]}}
+
+    monkeypatch.delenv("DUTY_OF_CARE_REPLIT_AGENT_COMMIT", raising=False)
+    monkeypatch.delenv("DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL", raising=False)
+    monkeypatch.setattr(main, "_fetch_backend_json", fake_fetch)
+    components = {c["key"]: c for c in TestClient(app).get("/v1/stack").json()["data"]["components"]}
+    assert components["replit_agent"]["status"] == "active"
+    assert "attestation recorded on the Cloud Run backend" in components["replit_agent"]["evidence"]

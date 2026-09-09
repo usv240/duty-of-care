@@ -32,6 +32,9 @@ ALLOWED: dict[str, frozenset[str]] = {
     "/v1/report": frozenset({"POST"}),
     "/v1/eval/latest": frozenset({"GET"}),
     "/v1/keys": frozenset({"POST"}),
+    # Keys are minted and signed by the backend, so the route that inspects one
+    # must be answered by the same issuer or its signature will never verify.
+    "/v1/keys/self": frozenset({"GET"}),
 }
 
 REQUEST_HEADERS = frozenset({"accept", "authorization", "content-type", "x-api-key"})
