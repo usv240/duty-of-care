@@ -244,10 +244,23 @@ def _fetch_backend_json(path: str) -> dict[str, Any]:
 # ------------------------------------------------------------------ pages ----
 
 
+# Always revalidate the pages and their assets. The ETag makes that a cheap 304,
+# and it means a redeploy is never masked by a stylesheet cached in someone's
+# browser from the previous build.
+REVALIDATE = {"Cache-Control": "no-cache"}
+
+
+class RevalidatingStatic(StaticFiles):
+    def file_response(self, *args: Any, **kwargs: Any) -> Response:
+        response = super().file_response(*args, **kwargs)
+        response.headers["Cache-Control"] = "no-cache"
+        return response
+
+
 for _route, _file in PAGES.items():
 
     def _page(file: str = _file) -> FileResponse:
-        return FileResponse(WEB / file)
+        return FileResponse(WEB / file, headers=REVALIDATE)
 
     app.get(_route, include_in_schema=False)(_page)
 
@@ -853,4 +866,4 @@ async def report(body: ReportBody) -> Response:
     )
 
 
-app.mount("/static", StaticFiles(directory=WEB), name="static")
+app.mount("/static", RevalidatingStatic(directory=WEB), name="static")

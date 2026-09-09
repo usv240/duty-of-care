@@ -44,3 +44,16 @@ def test_the_live_panel_is_namespaced() -> None:
     script = (ROOT / "app" / "web" / "site.js").read_text("utf-8")
     assert ".livepanel{" in css and ".livepanel[hidden]" in css
     assert "'livepanel'" in script
+
+
+def test_pages_and_assets_must_be_revalidated() -> None:
+    """A cached stylesheet from the previous build must never survive a redeploy."""
+    from fastapi.testclient import TestClient
+
+    from duty_of_care.main import app
+
+    client = TestClient(app)
+    for path in ("/", "/stack", "/static/site.css", "/static/site.js"):
+        response = client.get(path)
+        assert response.status_code == 200, path
+        assert response.headers.get("cache-control") == "no-cache", path
