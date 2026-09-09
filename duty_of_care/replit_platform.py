@@ -397,6 +397,9 @@ def export_store() -> ExportStore:
     return _EXPORT_STORE
 
 
+_LAST_EXPORT: dict[str, str | None] = {"backend": None, "note": None}
+
+
 def put_export(name: str, text: str) -> tuple[str, str, str | None]:
     """Store an export on the primary store, falling back to a local file and saying so.
 
@@ -405,16 +408,16 @@ def put_export(name: str, text: str) -> tuple[str, str, str | None]:
     """
     primary = export_store()
     try:
-        return primary.put(name, text), primary.backend, None
+        export_id = primary.put(name, text)
     except Exception as exc:  # noqa: BLE001 - the fallback is the point; the reason is reported
         if primary.backend == "local_file":
             raise
         fallback = FileExportStore()
-        return (
-            fallback.put(name, text),
-            fallback.backend,
-            f"{primary.backend} failed ({type(exc).__name__}); stored locally instead",
-        )
+        note = f"{primary.backend} failed ({type(exc).__name__}); stored locally instead"
+        _LAST_EXPORT.update(backend=fallback.backend, note=note)
+        return fallback.put(name, text), fallback.backend, note
+    _LAST_EXPORT.update(backend=primary.backend, note=None)
+    return export_id, primary.backend, None
 
 
 def get_export(export_id: str) -> str | None:
@@ -481,12 +484,19 @@ def capabilities() -> dict[str, Any]:
             }[store.backend],
         },
         "object_storage": {
+            # Constructing the client proves the library is present, not that a bucket is
+            # reachable. Only a write that actually landed earns the active status.
             "ok": True,
             "backend": exports.backend,
-            "detail": {
-                "replit_app_storage": "App Storage bucket via the Replit client",
-                "local_file": "temporary local files; ephemeral on Cloud Run",
-            }[exports.backend],
+            "last_write": dict(_LAST_EXPORT),
+            "proven": _LAST_EXPORT["backend"] == "replit_app_storage",
+            "detail": (
+                {
+                    "replit_app_storage": "App Storage client selected",
+                    "local_file": "temporary local files; ephemeral on Cloud Run",
+                }[exports.backend]
+                + (f"; last write: {_LAST_EXPORT['note'] or _LAST_EXPORT['backend']}" if _LAST_EXPORT["backend"] else "; no export written yet on this instance")
+            ),
         },
         "scheduled": {
             "ok": bool(recheck),
