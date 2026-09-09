@@ -28,7 +28,7 @@ are optional service activation, not eligibility.
   `618d450b36c0263f9737f214389bef8cbb0609e9` (`git log --date=iso-strict`):
   - `21d70efc45c00b86312d98a725fc4c3e63c877ef` — `2026-09-05T05:34:27Z` —
     "Update Replit configuration"
-  - `077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d` — `2026-09-05T05:56:08Z` —
+  - `d91720ee77de655e20b3d6d001df0b15a3d34808` — `2026-09-05T05:56:08Z` —
     "Implement backend proxy module and update environment configuration" (HEAD)
 - **Not yet on GitHub.** As of 2026-09-08 22:30 UTC `origin/main` of
   `usv240/duty-of-care` is still `618d450b`. The MCP server cannot push; the
@@ -103,7 +103,7 @@ Evidence variables:
 
 ```text
 DUTY_OF_CARE_REPLIT_AGENT_EVIDENCE_URL=https://replit.com/@ujwal240/duty-of-care
-DUTY_OF_CARE_REPLIT_AGENT_COMMIT=077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d
+DUTY_OF_CARE_REPLIT_AGENT_COMMIT=d91720ee77de655e20b3d6d001df0b15a3d34808
 ```
 
 - Cloud Run: set 2026-09-08 on `duty-of-care-agent-backend` (us-central1,
@@ -111,7 +111,7 @@ DUTY_OF_CARE_REPLIT_AGENT_COMMIT=077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d
   --update-env-vars`; serving revision `duty-of-care-agent-backend-00022-z4w`.
   Proof: `GET /health` returns `replit_platform.agent_evidence.present: true`
   with the URL and SHA above; `GET /v1/stack` reports `replit_agent: active`
-  with evidence "Agent-authored commit 077ca7e87a39 with transcript evidence".
+  with evidence "Agent-authored commit d91720ee77de with transcript evidence".
 - Replit: **not yet set**. The MCP server cannot manage Replit Secrets; the
   owner must add both in the workspace Secrets pane.
 
@@ -142,7 +142,7 @@ DUTY_OF_CARE_REPLIT_AGENT_COMMIT=077ca7e87a39ce65a1d03cd7cf3d83cc26ce510d
 
 | Service | Status on `/v1/stack` | Evidence |
 |---|---|---|
-| Replit Agent | active | commit `077ca7e87a39`, attestation recorded on the Cloud Run backend |
+| Replit Agent | active | commit `d91720ee77de`, attestation recorded on the Cloud Run backend |
 | Autoscale Deployment | active | serving from duty-of-care.replit.app |
 | Replit Auth | active | Replit Auth headers are trusted on this host; `/v1/decisions` returns `401 sign_in_required` when signed out |
 | Replit Database | active | managed Postgres via `DATABASE_URL` |

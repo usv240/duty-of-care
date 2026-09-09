@@ -108,7 +108,7 @@ def test_agent_attestation_is_carried_from_the_backend(monkeypatch: pytest.Monke
             return {"data": {"integrations": {"google_vertex": {"ok": True}, "agent_search": {"ok": True}, "google_adk": {"ok": True}}}}
         return {"data": {"surface": "cloud_run", "components": [
             {"key": "gemini", "group": "google", "status": "live", "evidence": "probe"},
-            {"key": "replit_agent", "group": "partner", "status": "active", "evidence": "Agent-authored commit 077ca7e87a39"},
+            {"key": "replit_agent", "group": "partner", "status": "active", "evidence": "Agent-authored commit d91720ee77de"},
         ]}}
 
     monkeypatch.delenv("DUTY_OF_CARE_REPLIT_AGENT_COMMIT", raising=False)
