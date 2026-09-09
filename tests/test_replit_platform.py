@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
+from types import ModuleType
 
 import pytest
 from fastapi.testclient import TestClient
@@ -69,6 +71,53 @@ def test_export_is_explicit_and_round_trips() -> None:
     assert "attachment" in fetched.headers["content-disposition"]
     assert client.post("/v1/exports", json={"title": "t", "review": {}}).status_code == 422
     assert client.get("/v1/exports/exp_missing").status_code == 404
+
+
+def test_replit_database_backend_is_selected_and_round_trips(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class FakePostgresStore(replit_platform.FileDecisionStore):
+        backend = "replit_postgres"
+
+        def __init__(self, dsn: str) -> None:
+            assert dsn == "postgresql://managed-replit-database"
+            super().__init__(tmp_path / "managed-database.json")
+
+    monkeypatch.setenv("REPL_ID", "abc")
+    monkeypatch.setenv("DATABASE_URL", "postgresql://managed-replit-database")
+    monkeypatch.setattr(replit_platform, "PostgresDecisionStore", FakePostgresStore)
+    replit_platform.reset_stores()
+    store = replit_platform.decision_store()
+    record = {"decision_id": "dec_1", "decision": "dismissed"}
+    store.put("writer-1", record)
+    assert store.backend == "replit_postgres"
+    assert store.list("writer-1") == [record]
+
+
+def test_replit_app_storage_backend_is_selected_and_round_trips(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    blobs: dict[str, str] = {}
+
+    class FakeClient:
+        def upload_from_text(self, path: str, text: str) -> None:
+            blobs[path] = text
+
+        def download_as_text(self, path: str) -> str:
+            return blobs[path]
+
+    package = ModuleType("replit")
+    package.__path__ = []  # type: ignore[attr-defined]
+    object_storage = ModuleType("replit.object_storage")
+    object_storage.Client = FakeClient  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "replit", package)
+    monkeypatch.setitem(sys.modules, "replit.object_storage", object_storage)
+    monkeypatch.setenv("REPL_ID", "abc")
+    replit_platform.reset_stores()
+    store = replit_platform.export_store()
+    export_id = store.put("review", '{"disclaimer":"present"}')
+    assert store.backend == "replit_app_storage"
+    assert store.get(export_id) == '{"disclaimer":"present"}'
 
 
 def test_scheduled_recheck_records_metadata_only(tmp_path: Path) -> None:

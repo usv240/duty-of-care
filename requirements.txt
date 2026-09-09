@@ -10,3 +10,4 @@ uvicorn[standard]==0.41.0
 # Replit platform adapters (used when the app runs on Replit; safe elsewhere)
 psycopg[binary]==3.3.5
 replit-object-storage==1.0.2
+httpx>=0.28,<0.29
